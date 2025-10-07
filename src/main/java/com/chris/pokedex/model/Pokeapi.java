@@ -2,6 +2,7 @@ package com.chris.pokedex.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,22 +32,23 @@ public class Pokeapi {
     )
     private List<Habilidades> habilidades;
 
+    // ⚡ Relación uno a uno con Liga
+    @ManyToMany
+    @JoinTable(
+            name = "pokemon_liga",
+            joinColumns = @JoinColumn(name = "pokemon_id"),
+            inverseJoinColumns = @JoinColumn(name = "liga_id")
+    )
+    private List<Liga> liga;
+
     // Getters y setters
 
-    public List<Habilidades> getHabilidades() {
-        return habilidades;
+    public Long getId() {
+        return id;
     }
 
-    public void setHabilidades(List<Habilidades> habilidades) {
-        this.habilidades = habilidades;
-    }
-
-    public List<Tipo> getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(List<Tipo> tipo) {
-        this.tipo = tipo;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -57,11 +59,27 @@ public class Pokeapi {
         this.nombre = nombre;
     }
 
-    public Long getId() {
-        return id;
+    public List<Tipo> getTipo() {
+        return tipo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTipo(List<Tipo> tipo) {
+        this.tipo = tipo;
+    }
+
+    public List<Habilidades> getHabilidades() {
+        return habilidades;
+    }
+
+    public void setHabilidades(List<Habilidades> habilidades) {
+        this.habilidades = habilidades;
+    }
+
+    public List<Liga> getLiga() {
+        return liga;
+    }
+
+    public void setLiga(List<Liga> liga) {
+        this.liga = liga;
     }
 }

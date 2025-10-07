@@ -3,6 +3,7 @@ package com.chris.pokedex.controller;
 import com.chris.pokedex.PokemonService;
 import com.chris.pokedex.model.Pokeapi;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,4 +34,11 @@ public class PokemonController {
     public void deletePokeById(@PathVariable("id") Long id){
         pokemonService.deletePokemon(id);
     }
+
+    @DeleteMapping("/limpiar")
+    public ResponseEntity<Void> limpiarPokemons() {
+        pokemonService.limpiarPokemons();
+        return ResponseEntity.noContent().build();
+    }
+
 }
