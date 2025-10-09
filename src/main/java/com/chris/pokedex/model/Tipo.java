@@ -2,6 +2,9 @@ package com.chris.pokedex.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "tipo")
 public class Tipo {
@@ -10,6 +13,22 @@ public class Tipo {
     private Long id;
 
     private String nombre;
+
+    @ManyToMany
+    @JoinTable(
+            name = "doble_daño_de",
+            joinColumns = @JoinColumn(name = "tipo_id"),
+            inverseJoinColumns = @JoinColumn(name = "doble_daño_de_id")
+    )
+    private Set<Tipo> dobleDañoDe = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "doble_daño_a",
+            joinColumns = @JoinColumn(name = "tipo_id"),
+            inverseJoinColumns = @JoinColumn(name = "doble_daño_a_id")
+    )
+    private Set<Tipo> dobleDañoA = new HashSet<>();
 
     // Constructor, getters y setters
     public Tipo() {}

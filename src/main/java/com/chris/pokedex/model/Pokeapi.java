@@ -21,7 +21,7 @@ public class Pokeapi {
             joinColumns = @JoinColumn(name = "pokemon_id"),
             inverseJoinColumns = @JoinColumn(name = "tipo_id")
     )
-    private List<Tipo> tipo;
+    private List<Tipo> tipo = new ArrayList<>();
 
     // Relación con Habilidad (un Pokémon puede tener varias habilidades)
     @ManyToMany
@@ -30,7 +30,7 @@ public class Pokeapi {
             joinColumns = @JoinColumn(name = "pokemon_id"),
             inverseJoinColumns = @JoinColumn(name = "habilidad_id")
     )
-    private List<Habilidades> habilidades;
+    private List<Habilidades> habilidades = new ArrayList<>();
 
     // ⚡ Relación uno a uno con Liga
     @ManyToMany
@@ -39,7 +39,7 @@ public class Pokeapi {
             joinColumns = @JoinColumn(name = "pokemon_id"),
             inverseJoinColumns = @JoinColumn(name = "liga_id")
     )
-    private List<Liga> liga;
+    private List<Liga> liga = new ArrayList<>();
 
     // Getters y setters
 

@@ -41,4 +41,14 @@ public class PokemonController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("{id}")
+    public ResponseEntity<Pokeapi> updatePokemon(
+            @PathVariable Long id,
+            @RequestBody Pokeapi partialUpdate) {
+
+        Pokeapi updatedPokemon = pokemonService.updatePartialPokemon(id, partialUpdate);
+        return ResponseEntity.ok(updatedPokemon);
+    }
+
+
 }

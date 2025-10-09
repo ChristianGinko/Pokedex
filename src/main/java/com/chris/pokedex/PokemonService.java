@@ -51,4 +51,41 @@ public class PokemonService {
     public void deletePokemon(Long id){
         pokemonRepository.deleteById(id);
     }
+
+    @Transactional
+    public Pokeapi updatePartialPokemon(Long id, Pokeapi partialUpdate) {
+        Optional<Pokeapi> existingOpt = pokemonRepository.findById(id);
+
+        if (existingOpt.isEmpty()) {
+            throw new RuntimeException("Pokémon no encontrado con id: " + id);
+        }
+
+        Pokeapi existing = existingOpt.get();
+
+        // 🟢 Actualiza nombre si viene
+        if (partialUpdate.getNombre() != null) {
+            existing.setNombre(partialUpdate.getNombre());
+        }
+
+        // 🟢 Actualiza habilidades si viene una lista
+        if (partialUpdate.getHabilidades() != null && !partialUpdate.getHabilidades().isEmpty()) {
+            existing.getHabilidades().clear(); // limpia las actuales
+            existing.getHabilidades().addAll(partialUpdate.getHabilidades());
+        }
+
+        // 🟢 Actualiza tipos
+        if (partialUpdate.getTipo() != null && !partialUpdate.getTipo().isEmpty()) {
+            existing.getTipo().clear();
+            existing.getTipo().addAll(partialUpdate.getTipo());
+        }
+
+        // 🟢 Actualiza ligas
+        if (partialUpdate.getLiga() != null && !partialUpdate.getLiga().isEmpty()) {
+            existing.getLiga().clear();
+            existing.getLiga().addAll(partialUpdate.getLiga());
+        }
+
+        return pokemonRepository.save(existing);
+    }
+
 }
