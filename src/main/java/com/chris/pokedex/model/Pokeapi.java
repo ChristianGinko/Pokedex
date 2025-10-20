@@ -2,53 +2,25 @@ package com.chris.pokedex.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "pokemon")
+@Table(name = "pokemons")
 public class Pokeapi {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_pokemon;
 
     private String nombre;
 
-    // Relación con Tipo
-    @ManyToMany
-    @JoinTable(
-            name = "pokemon_tipo",
-            joinColumns = @JoinColumn(name = "pokemon_id"),
-            inverseJoinColumns = @JoinColumn(name = "tipo_id")
-    )
-    private List<Tipo> tipo = new ArrayList<>();
+    private Long id_liga;
 
-    // Relación con Habilidad (un Pokémon puede tener varias habilidades)
-    @ManyToMany
-    @JoinTable(
-            name = "pokemon_habilidad", // tabla intermedia
-            joinColumns = @JoinColumn(name = "pokemon_id"),
-            inverseJoinColumns = @JoinColumn(name = "habilidad_id")
-    )
-    private List<Habilidades> habilidades = new ArrayList<>();
-
-    // ⚡ Relación uno a uno con Liga
-    @ManyToMany
-    @JoinTable(
-            name = "pokemon_liga",
-            joinColumns = @JoinColumn(name = "pokemon_id"),
-            inverseJoinColumns = @JoinColumn(name = "liga_id")
-    )
-    private List<Liga> liga = new ArrayList<>();
-
-    // Getters y setters
-
-    public Long getId() {
-        return id;
+    public Long getId_pokemon() {
+        return id_pokemon;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId_pokemon(Long id_pokemon) {
+        this.id_pokemon = id_pokemon;
     }
 
     public String getNombre() {
@@ -59,27 +31,11 @@ public class Pokeapi {
         this.nombre = nombre;
     }
 
-    public List<Tipo> getTipo() {
-        return tipo;
+    public Long getId_liga() {
+        return id_liga;
     }
 
-    public void setTipo(List<Tipo> tipo) {
-        this.tipo = tipo;
-    }
-
-    public List<Habilidades> getHabilidades() {
-        return habilidades;
-    }
-
-    public void setHabilidades(List<Habilidades> habilidades) {
-        this.habilidades = habilidades;
-    }
-
-    public List<Liga> getLiga() {
-        return liga;
-    }
-
-    public void setLiga(List<Liga> liga) {
-        this.liga = liga;
+    public void setId_liga(Long id_liga) {
+        this.id_liga = id_liga;
     }
 }

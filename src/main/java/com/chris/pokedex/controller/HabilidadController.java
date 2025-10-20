@@ -1,27 +1,26 @@
 package com.chris.pokedex.controller;
 
+
 import com.chris.pokedex.model.Habilidades;
-import com.chris.pokedex.model.Pokeapi;
 import com.chris.pokedex.repository.HabilidadRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/habilidad")
 public class HabilidadController {
-    @Autowired
-    private HabilidadRepository habilidadRepository;
 
-    @PostMapping
-    public List<Habilidades> crearHabilidades(@RequestBody List<Habilidades> habilidades) {
-        return habilidadRepository.saveAll(habilidades);
+    private final HabilidadRepository repository;
+
+    public HabilidadController(HabilidadRepository repository) {
+        this.repository = repository;
     }
 
     @GetMapping
-    public List<Habilidades> listarHabilidades() {
-        return habilidadRepository.findAll();
+    public List<Habilidades> getAll(){
+        return repository.findAll();
     }
-
 }

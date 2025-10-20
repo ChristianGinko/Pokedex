@@ -1,7 +1,8 @@
 package com.chris.pokedex.controller;
 
-import com.chris.pokedex.model.Tipos;
-import com.chris.pokedex.repository.TipoRepository;
+
+import com.chris.pokedex.model.Ligas;
+import com.chris.pokedex.repository.LigaRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,17 +10,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tipo")
-public class TipoController {
+@RequestMapping("/api/ligas")
+public class LigasController {
 
-    private final TipoRepository repository;
+    private final LigaRepository repository;
 
-    public TipoController(TipoRepository repository) {
+    public LigasController(LigaRepository repository) {
         this.repository = repository;
     }
 
     @GetMapping
-    public List<Tipos> getAll() {
+    public List<Ligas> getAll(){
         return repository.findAll();
     }
 }

@@ -1,22 +1,27 @@
 package com.chris.pokedex.model;
 
+
 import jakarta.persistence.*;
 
-@Entity
-@Table(name = "liga")
-public class Liga {
+import java.util.List;
 
+@Entity
+@Table(name = "tipos")
+public class Tipos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    private Long id_tipo;
+
+
     private String nombre;
 
-    public Long getId() {
-        return id;
+    public Long getId_tipo() {
+        return id_tipo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId_tipo(Long id_tipo) {
+        this.id_tipo = id_tipo;
     }
 
     public String getNombre() {

@@ -4,20 +4,20 @@ package com.chris.pokedex.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "habilidades")
-public class Habilidades {
+@Table(name = "ligas")
+public class Ligas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_habilidad;
+    private Long id_liga;
 
     private String nombre;
 
-    public Long getId_habilidad() {
-        return id_habilidad;
+    public Long getId_liga() {
+        return id_liga;
     }
 
-    public void setId_habilidad(Long id_habilidad) {
-        this.id_habilidad = id_habilidad;
+    public void setId_liga(Long id_liga) {
+        this.id_liga = id_liga;
     }
 
     public String getNombre() {
