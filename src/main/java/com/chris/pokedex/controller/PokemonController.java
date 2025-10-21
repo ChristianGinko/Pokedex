@@ -17,20 +17,26 @@ import java.util.Optional;
 public class PokemonController {
 
     private final PokemonRepository repository;
+    private final PokemonService service;
 
-    public PokemonController(PokemonRepository repository) {
+    public PokemonController(PokemonRepository repository, PokemonService service) {
         this.repository = repository;
+        this.service = service;
     }
 
     @GetMapping
-    public List<Pokeapi> getAll() {
-        return repository.findAll();
+    public List<PokemonResumenDTO> getAll() {
+        return repository.findAll()
+                .stream()
+                .map(p -> new PokemonResumenDTO(p.getId_pokemon(), p.getNombre()))
+                .toList();
+
     }
 
     @GetMapping("/{id_pokemon}")
-    public ResponseEntity<Pokeapi> getById(@PathVariable Long id_pokemon) {
+    public ResponseEntity<PokemonDTO> getById(@PathVariable Long id_pokemon) {
         Optional<Pokeapi> pokemon = repository.findById(id_pokemon);
-        return pokemon.map(ResponseEntity::ok)
+        return pokemon.map(value -> ResponseEntity.ok(service.toDTO(value)))
                 .orElseGet(()-> ResponseEntity.notFound().build());
     }
 }

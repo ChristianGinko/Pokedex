@@ -13,6 +13,22 @@ public class Pokeapi {
 
     private String nombre;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "pokemon_tipo",
+            joinColumns = @JoinColumn(name = "id_pokemon"),
+            inverseJoinColumns = @JoinColumn(name = "id_tipo")
+    )
+    private List<Tipos> tipo;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "pokemon_habilidad",
+            joinColumns = @JoinColumn(name = "id_pokemon"),
+            inverseJoinColumns = @JoinColumn(name = "id_habilidad")
+    )
+    private List<Habilidades> habilidad;
+
     private Long id_liga;
 
     public Long getId_pokemon() {
@@ -37,5 +53,21 @@ public class Pokeapi {
 
     public void setId_liga(Long id_liga) {
         this.id_liga = id_liga;
+    }
+
+    public List<Tipos> getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(List<Tipos> tipo) {
+        this.tipo = tipo;
+    }
+
+    public List<Habilidades> getHabilidad() {
+        return habilidad;
+    }
+
+    public void setHabilidad(List<Habilidades> habilidad) {
+        this.habilidad = habilidad;
     }
 }
