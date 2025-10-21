@@ -16,6 +16,14 @@ public class Tipos {
 
     private String nombre;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "pokemon_tipo",
+            joinColumns = @JoinColumn(name = "id_tipo"),
+            inverseJoinColumns = @JoinColumn(name = "id_pokemon")
+    )
+    private List<Pokeapi> pokemons;
+
     public Long getId_tipo() {
         return id_tipo;
     }
@@ -30,5 +38,13 @@ public class Tipos {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public List<Pokeapi> getPokemons() {
+        return pokemons;
+    }
+
+    public void setPokemons(List<Pokeapi> pokemons) {
+        this.pokemons = pokemons;
     }
 }

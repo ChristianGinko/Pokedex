@@ -1,11 +1,16 @@
 package com.chris.pokedex;
 
+import com.chris.pokedex.DTO.Habilidades.HabilidadesDTO;
 import com.chris.pokedex.DTO.Ligas.LigasDTO;
 import com.chris.pokedex.DTO.Ligas.LigasResumenDTO;
 import com.chris.pokedex.DTO.Pokemon.PokemonDTO;
 import com.chris.pokedex.DTO.Pokemon.PokemonResumenDTO;
+import com.chris.pokedex.DTO.Tipos.TiposDTO;
+import com.chris.pokedex.DTO.Tipos.TiposResumenDTO;
+import com.chris.pokedex.model.Habilidades;
 import com.chris.pokedex.model.Ligas;
 import com.chris.pokedex.model.Pokeapi;
+import com.chris.pokedex.model.Tipos;
 import com.chris.pokedex.repository.PokemonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +52,25 @@ public class PokemonService {
                 ligas.getNombre(),
                 ligas.getPokemons().stream()
                         .map(l -> new LigasResumenDTO(l.getId_pokemon(), l.getNombre()))
+                        .collect(Collectors.toList())
+        );
+    }
+
+    public HabilidadesDTO toDTO(Habilidades habilidades) {
+        return new HabilidadesDTO(
+                habilidades.getId_habilidad(),
+                habilidades.getNombre(),
+                habilidades.getEfecto(),
+                habilidades.getEfecto_corto()
+        );
+    }
+
+    public TiposDTO toDTO(Tipos tipos) {
+        return new TiposDTO(
+                tipos.getId_tipo(),
+                tipos.getNombre(),
+                tipos.getPokemons().stream()
+                        .map(t -> new TiposResumenDTO(t.getId_pokemon(), t.getNombre()))
                         .collect(Collectors.toList())
         );
     }

@@ -1,20 +1,17 @@
-package com.chris.pokedex.model;
+package com.chris.pokedex.DTO.Habilidades;
 
-
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "habilidades")
-public class Habilidades {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class HabilidadesDTO {
     private Long id_habilidad;
-
     private String nombre;
-
     private String efecto;
-
     private String efecto_corto;
+
+    public HabilidadesDTO(Long id_habilidad, String nombre, String efecto, String efecto_corto) {
+        this.id_habilidad = id_habilidad;
+        this.nombre = nombre;
+        this.efecto = efecto;
+        this.efecto_corto = efecto_corto;
+    }
 
     public Long getId_habilidad() {
         return id_habilidad;
