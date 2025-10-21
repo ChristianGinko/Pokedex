@@ -1,10 +1,10 @@
-package com.chris.pokedex.DTO.Pokemon;
+package com.chris.pokedex.DTO.Ligas;
 
-public class PokemonResumenDTO {
+public class LigasResumenDTO {
     private Long id;
     private String nombre;
 
-    public PokemonResumenDTO(Long id, String nombre) {
+    public LigasResumenDTO(Long id, String nombre) {
         this.id = id;
         this.nombre = nombre;
     }

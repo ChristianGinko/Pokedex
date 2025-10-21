@@ -1,7 +1,10 @@
 package com.chris.pokedex;
 
+import com.chris.pokedex.DTO.Ligas.LigasDTO;
+import com.chris.pokedex.DTO.Ligas.LigasResumenDTO;
 import com.chris.pokedex.DTO.Pokemon.PokemonDTO;
 import com.chris.pokedex.DTO.Pokemon.PokemonResumenDTO;
+import com.chris.pokedex.model.Ligas;
 import com.chris.pokedex.model.Pokeapi;
 import com.chris.pokedex.repository.PokemonRepository;
 import jakarta.transaction.Transactional;
@@ -31,6 +34,19 @@ public class PokemonService {
                         .collect(Collectors.toList()),
                 pokemon.getHabilidad().stream()
                         .map(h -> new PokemonResumenDTO(h.getId_habilidad(), h.getNombre()))
+                        .collect(Collectors.toList()),
+                pokemon.getLiga() != null
+                        ? new PokemonResumenDTO(pokemon.getLiga().getId_liga(), pokemon.getLiga().getNombre())
+                        :null
+        );
+    }
+
+    public LigasDTO toDTO(Ligas ligas) {
+        return new LigasDTO(
+                ligas.getId_liga(),
+                ligas.getNombre(),
+                ligas.getPokemons().stream()
+                        .map(l -> new LigasResumenDTO(l.getId_pokemon(), l.getNombre()))
                         .collect(Collectors.toList())
         );
     }

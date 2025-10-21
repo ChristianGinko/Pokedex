@@ -29,7 +29,9 @@ public class Pokeapi {
     )
     private List<Habilidades> habilidad;
 
-    private Long id_liga;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_liga", nullable = false)
+    private Ligas liga;
 
     public Long getId_pokemon() {
         return id_pokemon;
@@ -47,14 +49,6 @@ public class Pokeapi {
         this.nombre = nombre;
     }
 
-    public Long getId_liga() {
-        return id_liga;
-    }
-
-    public void setId_liga(Long id_liga) {
-        this.id_liga = id_liga;
-    }
-
     public List<Tipos> getTipo() {
         return tipo;
     }
@@ -69,5 +63,13 @@ public class Pokeapi {
 
     public void setHabilidad(List<Habilidades> habilidad) {
         this.habilidad = habilidad;
+    }
+
+    public Ligas getLiga() {
+        return liga;
+    }
+
+    public void setLiga(Ligas liga) {
+        this.liga = liga;
     }
 }
