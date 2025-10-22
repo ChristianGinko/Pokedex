@@ -1,16 +1,20 @@
 package com.chris.pokedex.DTO.Habilidades;
 
+import java.util.List;
+
 public class HabilidadesDTO {
     private Long id_habilidad;
     private String nombre;
     private String efecto;
     private String efecto_corto;
+    private List<HabilidadesResumenDTO> pokemons;
 
-    public HabilidadesDTO(Long id_habilidad, String nombre, String efecto, String efecto_corto) {
+    public HabilidadesDTO(Long id_habilidad, String nombre, String efecto, String efecto_corto, List<HabilidadesResumenDTO> pokemons) {
         this.id_habilidad = id_habilidad;
         this.nombre = nombre;
         this.efecto = efecto;
         this.efecto_corto = efecto_corto;
+        this.pokemons = pokemons;
     }
 
     public Long getId_habilidad() {
@@ -43,5 +47,13 @@ public class HabilidadesDTO {
 
     public void setEfecto_corto(String efecto_corto) {
         this.efecto_corto = efecto_corto;
+    }
+
+    public List<HabilidadesResumenDTO> getPokemons() {
+        return pokemons;
+    }
+
+    public void setPokemons(List<HabilidadesResumenDTO> pokemons) {
+        this.pokemons = pokemons;
     }
 }

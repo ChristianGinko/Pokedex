@@ -1,6 +1,7 @@
 package com.chris.pokedex;
 
 import com.chris.pokedex.DTO.Habilidades.HabilidadesDTO;
+import com.chris.pokedex.DTO.Habilidades.HabilidadesResumenDTO;
 import com.chris.pokedex.DTO.Ligas.LigasDTO;
 import com.chris.pokedex.DTO.Ligas.LigasResumenDTO;
 import com.chris.pokedex.DTO.Pokemon.PokemonDTO;
@@ -61,7 +62,10 @@ public class PokemonService {
                 habilidades.getId_habilidad(),
                 habilidades.getNombre(),
                 habilidades.getEfecto(),
-                habilidades.getEfecto_corto()
+                habilidades.getEfecto_corto(),
+                habilidades.getPokemons().stream()
+                        .map(h-> new HabilidadesResumenDTO(h.getId_pokemon(), h.getNombre()))
+                        .collect(Collectors.toList())
         );
     }
 
