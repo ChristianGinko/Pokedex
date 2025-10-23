@@ -73,6 +73,24 @@ public class PokemonService {
         return new TiposDTO(
                 tipos.getId_tipo(),
                 tipos.getNombre(),
+                tipos.getDobleDañoDe().stream()
+                        .map(t-> new TiposResumenDTO(t.getId_tipo(), t.getNombre()))
+                        .collect(Collectors.toList()),
+                tipos.getDobleDañoA().stream()
+                        .map(t-> new TiposResumenDTO(t.getId_tipo(), t.getNombre()))
+                        .collect(Collectors.toList()),
+                tipos.getMitadDañoDe().stream()
+                        .map(t-> new TiposResumenDTO(t.getId_tipo(), t.getNombre()))
+                        .collect(Collectors.toList()),
+                tipos.getMitadDañoA().stream()
+                        .map(t-> new TiposResumenDTO(t.getId_tipo(), t.getNombre()))
+                        .collect(Collectors.toList()),
+                tipos.getSinDañoDe().stream()
+                        .map(t-> new TiposResumenDTO(t.getId_tipo(), t.getNombre()))
+                        .collect(Collectors.toList()),
+                tipos.getSinDañoA().stream()
+                        .map(t-> new TiposResumenDTO(t.getId_tipo(), t.getNombre()))
+                        .collect(Collectors.toList()),
                 tipos.getPokemons().stream()
                         .map(t -> new TiposResumenDTO(t.getId_pokemon(), t.getNombre()))
                         .collect(Collectors.toList())
