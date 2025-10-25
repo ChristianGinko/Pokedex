@@ -13,47 +13,36 @@ import java.util.*;
 
 @Repository
 public class LigaRepository {
-    private static final String URL = "jdbc:mysql://topoha.duckdns.org:3399/pokeapi";
-    private static final String USER = "chris";
-    private static final String PASSWORD = "chris1210";
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public LigaRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<Ligas> findAll() {
-        List<Ligas> ligas = new ArrayList<>();
         String sql = "SELECT id_liga, nombre FROM ligas";
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()
-        ) {
-            while (rs.next()) {
-                Ligas l = new Ligas();
-                l.setId_liga(rs.getLong("id_liga"));
-                l.setNombre(rs.getString("nombre"));
-                ligas.add(l);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return ligas;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Ligas l = new Ligas();
+            l.setId_liga(rs.getLong("id_liga"));
+            l.setNombre(rs.getString("nombre"));
+            return l;
+        });
     }
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     public Ligas findById(Long id_liga) {
-        String sql = "SELECT l.id_liga, l.nombre AS liga_nombre, p.id_pokemon, p.nombre AS pokemon_nombre " +
-                "FROM ligas l " +
-                "INNER JOIN pokemons p ON l.id_liga = p.id_liga " +
-                "WHERE l.id_liga = ?";
+        String sql = """
+            SELECT l.id_liga, l.nombre AS liga_nombre, p.id_pokemon, p.nombre AS pokemon_nombre
+            FROM ligas l
+            INNER JOIN pokemons p ON l.id_liga = p.id_liga
+            WHERE l.id_liga = ?
+        """;
 
         return jdbcTemplate.query(sql, new Object[]{id_liga}, rs -> {
             Ligas liga = null;
             List<Pokeapi> pokemons = new ArrayList<>();
-            Set<Long> seenPokemonIds = new HashSet<>(); // Para evitar repetidos
+            Set<Long> seenPokemonIds = new HashSet<>();
 
             while (rs.next()) {
                 if (liga == null) {
@@ -73,7 +62,7 @@ public class LigaRepository {
             }
 
             if (liga != null) {
-                liga.setPokemons(pokemons); // Agregamos la lista de pokémons
+                liga.setPokemons(pokemons);
             }
 
             return liga;

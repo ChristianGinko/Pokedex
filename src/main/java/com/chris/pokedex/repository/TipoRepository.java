@@ -2,7 +2,9 @@ package com.chris.pokedex.repository;
 
 import com.chris.pokedex.model.Pokeapi;
 import com.chris.pokedex.model.Tipos;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -13,32 +15,22 @@ import java.util.Map;
 
 @Repository
 public class TipoRepository {
-    private static final String URL = "jdbc:mysql://topoha.duckdns.org:3399/pokeapi";
-    private static final String USER = "chris";
-    private static final String PASSWORD = "chris1210";
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public TipoRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<Tipos> findAll() {
-        List<Tipos> tipos = new ArrayList<>();
         String sql = "SELECT id_tipo, nombre FROM tipos";
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()
-        ) {
-            while (rs.next()) {
-                Tipos t = new Tipos();
-                t.setId_tipo(rs.getLong("id_tipo"));
-                t.setNombre(rs.getString("nombre"));
-                tipos.add(t);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return tipos;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Tipos t = new Tipos();
+            t.setId_tipo(rs.getLong("id_tipo"));
+            t.setNombre(rs.getString("nombre"));
+            return t;
+        });
     }
 
     public Tipos findById(Long id_tipo) {
@@ -67,23 +59,17 @@ public class TipoRepository {
                 "INNER JOIN pokemons p ON pt.id_pokemon = p.id_pokemon " +
                 "WHERE t.id_tipo = ?";
 
-        Tipos tipoPrincipal = null;
+        return jdbcTemplate.query(sql, new Object[]{id_tipo}, rs -> {
+            Tipos tipoPrincipal = null;
+            Map<Long, Tipos> dobleDanioDeMap = new HashMap<>();
+            Map<Long, Tipos> dobleDanioAMap = new HashMap<>();
+            Map<Long, Tipos> mitadDanioDeMap = new HashMap<>();
+            Map<Long, Tipos> mitadDanioAMap = new HashMap<>();
+            Map<Long, Tipos> sinDanioDeMap = new HashMap<>();
+            Map<Long, Tipos> sinDanioAMap = new HashMap<>();
+            Map<Long, Pokeapi> pokemonsMap = new HashMap<>();
 
-        Map<Long, Tipos> dobleDanioDeMap = new HashMap<>();
-        Map<Long, Tipos> dobleDanioAMap = new HashMap<>();
-        Map<Long, Tipos> mitadDanioDeMap = new HashMap<>();
-        Map<Long, Tipos> mitadDanioAMap = new HashMap<>();
-        Map<Long, Tipos> sinDanioDeMap = new HashMap<>();
-        Map<Long, Tipos> sinDanioAMap = new HashMap<>();
-        Map<Long, Pokeapi> pokemonsMap = new HashMap<>();
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setLong(1, id_tipo);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
+            while(rs.next()) {
                 if (tipoPrincipal == null) {
                     tipoPrincipal = new Tipos();
                     tipoPrincipal.setId_tipo(rs.getLong("id_tipo"));
@@ -152,23 +138,19 @@ public class TipoRepository {
                     p.setNombre(rs.getString("p_nombre"));
                     pokemonsMap.put(pId, p);
                 }
+
+
+                if (tipoPrincipal != null) {
+                    tipoPrincipal.setDobleDanioDe(new ArrayList<>(dobleDanioDeMap.values()));
+                    tipoPrincipal.setDobleDanioA(new ArrayList<>(dobleDanioAMap.values()));
+                    tipoPrincipal.setMitadDanioDe(new ArrayList<>(mitadDanioDeMap.values()));
+                    tipoPrincipal.setMitadDanioA(new ArrayList<>(mitadDanioAMap.values()));
+                    tipoPrincipal.setSinDanioDe(new ArrayList<>(sinDanioDeMap.values()));
+                    tipoPrincipal.setSinDanioA(new ArrayList<>(sinDanioAMap.values()));
+                    tipoPrincipal.setPokemons(new ArrayList<>(pokemonsMap.values()));
+                }
             }
-
-            if (tipoPrincipal != null) {
-                tipoPrincipal.setDobleDanioDe(new ArrayList<>(dobleDanioDeMap.values()));
-                tipoPrincipal.setDobleDanioA(new ArrayList<>(dobleDanioAMap.values()));
-                tipoPrincipal.setMitadDanioDe(new ArrayList<>(mitadDanioDeMap.values()));
-                tipoPrincipal.setMitadDanioA(new ArrayList<>(mitadDanioAMap.values()));
-                tipoPrincipal.setSinDanioDe(new ArrayList<>(sinDanioDeMap.values()));
-                tipoPrincipal.setSinDanioA(new ArrayList<>(sinDanioAMap.values()));
-                tipoPrincipal.setPokemons(new ArrayList<>(pokemonsMap.values()));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return tipoPrincipal;
+            return tipoPrincipal;
+        });
     }
-
 }

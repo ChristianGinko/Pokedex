@@ -4,6 +4,8 @@ import com.chris.pokedex.model.Habilidades;
 import com.chris.pokedex.model.Ligas;
 import com.chris.pokedex.model.Pokeapi;
 import com.chris.pokedex.model.Tipos;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -14,34 +16,23 @@ import java.util.Map;
 
 @Repository
 public class PokemonRepository {
-     private static final String URL = "jdbc:mysql://topoha.duckdns.org:3399/pokeapi";
-     private static final String USER = "chris";
-     private static final String PASSWORD = "chris1210";
 
-     private Connection getConnection () throws SQLException {
-         return DriverManager.getConnection(URL, USER, PASSWORD);
-     }
+    private final JdbcTemplate jdbcTemplate;
 
-     public List<Pokeapi> findAll() {
-         List<Pokeapi> pokemons = new ArrayList<>();
-         String sql = "SELECT id_pokemon, nombre FROM pokemons";
+    @Autowired
+    public PokemonRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
-         try (Connection conn = getConnection();
-              PreparedStatement stmt = conn.prepareStatement(sql);
-              ResultSet rs = stmt.executeQuery()
-         ) {
-             while (rs.next()) {
-                 Pokeapi p = new Pokeapi();
-                 p.setId_pokemon(rs.getLong("id_pokemon"));
-                 p.setNombre(rs.getString("nombre"));
-                 pokemons.add(p);
-             }
-
-         } catch (SQLException e) {
-             e.printStackTrace();
-         }
-         return pokemons;
-     }
+    public List<Pokeapi> findAll() {
+        String sql = "SELECT id_pokemon, nombre FROM pokemons";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Pokeapi p = new Pokeapi();
+            p.setId_pokemon(rs.getLong("id_pokemon"));
+            p.setNombre(rs.getString("nombre"));
+            return p;
+        });
+    }
 
     public Pokeapi findById(Long id_pokemon) {
         String sql = "SELECT p.id_pokemon, p.nombre, " +
@@ -56,99 +47,49 @@ public class PokemonRepository {
                 "LEFT JOIN ligas l ON p.id_liga = l.id_liga " +
                 "WHERE p.id_pokemon = ?";
 
-        Pokeapi pokemon = null;
-        Ligas liga = null;
+        return jdbcTemplate.query(sql, new Object[]{id_pokemon}, rs -> {
+            Pokeapi pokemon = null;
+            Ligas liga = null;
+            Map<Long, Tipos> tiposMap = new HashMap<>();
+            Map<Long, Habilidades> habilidadesMap = new HashMap<>();
 
-        // Evitar duplicados
-        Map<Long, Tipos> tiposMap = new HashMap<>();
-        Map<Long, Habilidades> habilidadesMap = new HashMap<>();
+            while(rs.next()){
+            if (pokemon == null) {
+                pokemon = new Pokeapi();
+                pokemon.setId_pokemon(rs.getLong("id_pokemon"));
+                pokemon.setNombre(rs.getString("nombre"));
 
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setLong(1, id_pokemon);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-
-                if (pokemon == null) {
-                    pokemon = new Pokeapi();
-                    pokemon.setId_pokemon(rs.getLong("id_pokemon"));
-                    pokemon.setNombre(rs.getString("nombre"));
-
-                    Long idLiga = rs.getLong("id_liga");
-                    if (idLiga != 0) {
-                        liga = new Ligas();
-                        liga.setId_liga(idLiga);
-                        liga.setNombre(rs.getString("l_nombre"));
-                        pokemon.setLiga(liga);
-                    }
-                }
-
-                Long idTipo = rs.getLong("id_tipo");
-                if (idTipo != 0 && !tiposMap.containsKey(idTipo)) {
-                    Tipos tipo = new Tipos();
-                    tipo.setId_tipo(idTipo);
-                    tipo.setNombre(rs.getString("t_nombre"));
-                    tiposMap.put(idTipo, tipo);
-                }
-
-                Long idHabilidad = rs.getLong("id_habilidad");
-                if (idHabilidad != 0 && !habilidadesMap.containsKey(idHabilidad)) {
-                    Habilidades habilidad = new Habilidades();
-                    habilidad.setId_habilidad(idHabilidad);
-                    habilidad.setNombre(rs.getString("h_nombre"));
-                    habilidadesMap.put(idHabilidad, habilidad);
+                Long idLiga = rs.getLong("id_liga");
+                if (idLiga != 0) {
+                    liga = new Ligas();
+                    liga.setId_liga(idLiga);
+                    liga.setNombre(rs.getString("l_nombre"));
+                    pokemon.setLiga(liga);
                 }
             }
 
+            Long idTipo = rs.getLong("id_tipo");
+            if (idTipo != 0 && !tiposMap.containsKey(idTipo)) {
+                Tipos tipo = new Tipos();
+                tipo.setId_tipo(idTipo);
+                tipo.setNombre(rs.getString("t_nombre"));
+                tiposMap.put(idTipo, tipo);
+            }
+
+            Long idHabilidad = rs.getLong("id_habilidad");
+            if (idHabilidad != 0 && !habilidadesMap.containsKey(idHabilidad)) {
+                Habilidades habilidad = new Habilidades();
+                habilidad.setId_habilidad(idHabilidad);
+                habilidad.setNombre(rs.getString("h_nombre"));
+                habilidadesMap.put(idHabilidad, habilidad);
+            }
             if (pokemon != null) {
                 pokemon.setTipos(new ArrayList<>(tiposMap.values()));
                 pokemon.setHabilidades(new ArrayList<>(habilidadesMap.values()));
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
-        return pokemon;
+            return pokemon;
+        });
     }
-
-     public void save(Pokeapi pokemon) {
-         String sql = "INSERT INTO pokemons (nombre) VALUES (?)";
-
-         try (Connection conn = getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-             stmt.setString(1, pokemon.getNombre());
-             stmt.executeUpdate();
-         } catch (SQLException e) {
-             e.printStackTrace();
-         }
-     }
-
-     public void update(Pokeapi pokemon) {
-         String sql = "UPDATE pokemons SET nombre =  ? WHERE id_pokemon = ?";
-
-         try(Connection conn = getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-             stmt.setString(1, pokemon.getNombre());
-             stmt.setLong(2, pokemon.getId_pokemon());
-             stmt.executeUpdate();
-         } catch (SQLException e) {
-             e.printStackTrace();
-         }
-     }
-
-     public void delete(Pokeapi pokemon) {
-         String sql = "DELETE FROM pokemons WHERE id_pokemon = ?";
-
-         try(Connection conn = getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-             stmt.setLong(1, pokemon.getId_pokemon());
-             stmt.executeUpdate();
-         } catch(SQLException e) {
-             e.printStackTrace();
-         }
-     }
 }

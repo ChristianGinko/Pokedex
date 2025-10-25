@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,45 +13,34 @@ import java.util.Map;
 
 @Repository
 public class HabilidadRepository {
-    private static final String URL = "jdbc:mysql://topoha.duckdns.org:3399/pokeapi";
-    private static final String USER = "chris";
-    private static final String PASSWORD = "chris1210";
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public HabilidadRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<Habilidades> findAll() {
-        List<Habilidades> habilidades = new ArrayList<>();
         String sql = "SELECT id_habilidad, nombre FROM habilidades";
 
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()
-        ) {
-            while (rs.next()) {
-                Habilidades h = new Habilidades();
-                h.setId_habilidad(rs.getLong("id_habilidad"));
-                h.setNombre(rs.getString("nombre"));
-                habilidades.add(h);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return habilidades;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Habilidades h = new Habilidades();
+            h.setId_habilidad(rs.getLong("id_habilidad"));
+            h.setNombre(rs.getString("nombre"));
+            return h;
+        });
     }
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     public Habilidades findById(Long id_habilidad) {
-        String sql = "SELECT h.id_habilidad, h.nombre, h.efecto, h.efecto_corto, " +
-                "p.id_pokemon AS p_id, p.nombre AS p_nombre " +
-                "FROM habilidades h " +
-                "LEFT JOIN pokemon_habilidad ph ON h.id_habilidad = ph.id_habilidad " +
-                "LEFT JOIN pokemons p ON ph.id_pokemon = p.id_pokemon " +
-                "WHERE h.id_habilidad = ?";
+        String sql = """
+            SELECT h.id_habilidad, h.nombre, h.efecto, h.efecto_corto,
+                   p.id_pokemon AS p_id, p.nombre AS p_nombre
+            FROM habilidades h
+            LEFT JOIN pokemon_habilidad ph ON h.id_habilidad = ph.id_habilidad
+            LEFT JOIN pokemons p ON ph.id_pokemon = p.id_pokemon
+            WHERE h.id_habilidad = ?
+        """;
 
         return jdbcTemplate.query(sql, new Object[]{id_habilidad}, rs -> {
             Habilidades habilidad = null;
@@ -78,9 +66,6 @@ public class HabilidadRepository {
 
             if (habilidad != null) {
                 habilidad.setPokemons(new ArrayList<>(pokemonsMap.values()));
-            } else {
-                // Si no existe la habilidad, devolvemos null
-                return null;
             }
 
             return habilidad;
