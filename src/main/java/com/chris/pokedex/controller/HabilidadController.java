@@ -1,8 +1,7 @@
 package com.chris.pokedex.controller;
 
 
-import com.chris.pokedex.DTO.Habilidades.HabilidadesDTO;
-import com.chris.pokedex.DTO.Habilidades.HabilidadesResumenDTO;
+
 import com.chris.pokedex.model.Habilidades;
 import com.chris.pokedex.repository.HabilidadRepository;
 import com.chris.pokedex.repository.Services.HabilidadService;

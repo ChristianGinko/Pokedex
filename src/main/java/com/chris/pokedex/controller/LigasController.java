@@ -1,8 +1,7 @@
 package com.chris.pokedex.controller;
 
 
-import com.chris.pokedex.DTO.Ligas.LigasDTO;
-import com.chris.pokedex.DTO.Ligas.LigasResumenDTO;
+
 import com.chris.pokedex.model.Ligas;
 import com.chris.pokedex.repository.LigaRepository;
 import com.chris.pokedex.repository.Services.LigaService;

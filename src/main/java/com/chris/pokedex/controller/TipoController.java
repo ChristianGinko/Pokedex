@@ -1,7 +1,5 @@
 package com.chris.pokedex.controller;
 
-import com.chris.pokedex.DTO.Tipos.TiposDTO;
-import com.chris.pokedex.DTO.Tipos.TiposResumenDTO;
 import com.chris.pokedex.model.Tipos;
 import com.chris.pokedex.repository.Services.TipoService;
 import com.chris.pokedex.repository.TipoRepository;
