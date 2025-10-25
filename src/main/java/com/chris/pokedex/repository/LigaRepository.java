@@ -9,8 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class LigaRepository {
@@ -46,26 +45,38 @@ public class LigaRepository {
     private JdbcTemplate jdbcTemplate;
 
     public Ligas findById(Long id_liga) {
-        String sql = "SELECT l.id_liga, l.nombre, p.id_pokemon, p.nombre " +
+        String sql = "SELECT l.id_liga, l.nombre AS liga_nombre, p.id_pokemon, p.nombre AS pokemon_nombre " +
                 "FROM ligas l " +
                 "INNER JOIN pokemons p ON l.id_liga = p.id_liga " +
                 "WHERE l.id_liga = ?";
 
-        return jdbcTemplate.query(sql, new Object[]{id_liga}, rs ->{
-            Ligas ligas = null;
+        return jdbcTemplate.query(sql, new Object[]{id_liga}, rs -> {
+            Ligas liga = null;
             List<Pokeapi> pokemons = new ArrayList<>();
+            Set<Long> seenPokemonIds = new HashSet<>(); // Para evitar repetidos
 
             while (rs.next()) {
-                if (ligas == null) {
-                    ligas = new Ligas();
+                if (liga == null) {
+                    liga = new Ligas();
+                    liga.setId_liga(rs.getLong("id_liga"));
+                    liga.setNombre(rs.getString("liga_nombre"));
                 }
-                Long id_pokemon = rs.getLong("id_pokemon");
-                if (id_pokemon != 0) {
-                    pokemons.add(new Pokeapi());
+
+                Long idPokemon = rs.getLong("id_pokemon");
+                if (!rs.wasNull() && !seenPokemonIds.contains(idPokemon)) {
+                    Pokeapi p = new Pokeapi();
+                    p.setId_pokemon(idPokemon);
+                    p.setNombre(rs.getString("pokemon_nombre"));
+                    pokemons.add(p);
+                    seenPokemonIds.add(idPokemon);
                 }
             }
-            return ligas;
-        }
-        );
+
+            if (liga != null) {
+                liga.setPokemons(pokemons); // Agregamos la lista de pokémons
+            }
+
+            return liga;
+        });
     }
 }

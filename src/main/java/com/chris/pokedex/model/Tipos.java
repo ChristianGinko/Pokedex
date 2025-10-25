@@ -1,11 +1,12 @@
 package com.chris.pokedex.model;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 
 import java.util.List;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Tipos {
     private Long id_tipo;
     private String nombre;
