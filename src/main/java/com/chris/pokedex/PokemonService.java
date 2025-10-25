@@ -13,13 +13,10 @@ import com.chris.pokedex.model.Ligas;
 import com.chris.pokedex.model.Pokeapi;
 import com.chris.pokedex.model.Tipos;
 import com.chris.pokedex.repository.PokemonRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component

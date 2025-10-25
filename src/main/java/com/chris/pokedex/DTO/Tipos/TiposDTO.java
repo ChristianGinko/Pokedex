@@ -1,7 +1,5 @@
 package com.chris.pokedex.DTO.Tipos;
 
-import com.chris.pokedex.model.Tipos;
-
 import java.util.List;
 
 public class TiposDTO {
