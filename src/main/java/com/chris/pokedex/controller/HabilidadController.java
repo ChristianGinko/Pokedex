@@ -5,6 +5,7 @@ import com.chris.pokedex.DTO.Habilidades.HabilidadesDTO;
 import com.chris.pokedex.DTO.Habilidades.HabilidadesResumenDTO;
 import com.chris.pokedex.model.Habilidades;
 import com.chris.pokedex.repository.HabilidadRepository;
+import com.chris.pokedex.repository.Services.HabilidadService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,19 +19,24 @@ import java.util.Optional;
 @RequestMapping("/api/habilidad")
 public class HabilidadController {
 
-    private final HabilidadRepository repository;
+    private final HabilidadService service;
 
-    public HabilidadController(HabilidadRepository repository) {
-        this.repository = repository;
+    public HabilidadController(HabilidadService service){
+        this.service = service;
     }
 
     @GetMapping
-    public List<Habilidades> getAllHabilidades(){
-        return repository.findAll();
+    public List<Habilidades> getAll(){
+        return service.getAllHabilidades();
     }
 
     @GetMapping("/{id_habilidad}")
-    public Habilidades obtener(@PathVariable Long id_habilidad) {
-        return repository.findById(id_habilidad);
+    public ResponseEntity<Habilidades> getById(@PathVariable Long id_habilidad){
+        try{
+            return ResponseEntity.ok(service.getHabilidadCompleta(id_habilidad));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
+
 }

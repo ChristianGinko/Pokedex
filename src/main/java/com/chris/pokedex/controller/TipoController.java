@@ -3,6 +3,7 @@ package com.chris.pokedex.controller;
 import com.chris.pokedex.DTO.Tipos.TiposDTO;
 import com.chris.pokedex.DTO.Tipos.TiposResumenDTO;
 import com.chris.pokedex.model.Tipos;
+import com.chris.pokedex.repository.Services.TipoService;
 import com.chris.pokedex.repository.TipoRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,19 +18,24 @@ import java.util.Optional;
 @RequestMapping("/api/tipo")
 public class TipoController {
 
-    private final TipoRepository repository;
+    private final TipoService service;
 
-    public TipoController(TipoRepository repository){
-        this.repository = repository;
+    public TipoController(TipoService service){
+        this.service = service;
     }
 
     @GetMapping
-    public List<Tipos> getAllTipos(){
-        return repository.findAll();
+    public List<Tipos> getAll(){
+        return service.getAllTipos();
     }
 
-    @GetMapping("/{id_tipo}")
-    public Tipos obtener(@PathVariable Long id_tipo) {
-        return repository.findById(id_tipo);
+    @GetMapping("/{id_tipo")
+    public ResponseEntity<Tipos> getById(@PathVariable Long id_tipo){
+        try{
+            return ResponseEntity.ok(service.getTipoCompleto(id_tipo));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
+
 }
