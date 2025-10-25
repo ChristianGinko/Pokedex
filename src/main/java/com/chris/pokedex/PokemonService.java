@@ -1,3 +1,4 @@
+/*
 package com.chris.pokedex;
 
 import com.chris.pokedex.DTO.Habilidades.HabilidadesDTO;
@@ -35,10 +36,10 @@ public class PokemonService {
         return new PokemonDTO(
                 pokemon.getId_pokemon(),
                 pokemon.getNombre(),
-                pokemon.getTipo().stream()
+                pokemon.getTipos().stream()
                         .map(t -> new PokemonResumenDTO(t.getId_tipo(), t.getNombre()))
                         .collect(Collectors.toList()),
-                pokemon.getHabilidad().stream()
+                pokemon.getHabilidades().stream()
                         .map(h -> new PokemonResumenDTO(h.getId_habilidad(), h.getNombre()))
                         .collect(Collectors.toList()),
                 pokemon.getLiga() != null
@@ -98,3 +99,4 @@ public class PokemonService {
     }
 
 }
+*/

@@ -3,7 +3,6 @@ package com.chris.pokedex.controller;
 
 import com.chris.pokedex.DTO.Habilidades.HabilidadesDTO;
 import com.chris.pokedex.DTO.Habilidades.HabilidadesResumenDTO;
-import com.chris.pokedex.PokemonService;
 import com.chris.pokedex.model.Habilidades;
 import com.chris.pokedex.repository.HabilidadRepository;
 import org.springframework.http.ResponseEntity;
@@ -20,25 +19,18 @@ import java.util.Optional;
 public class HabilidadController {
 
     private final HabilidadRepository repository;
-    private final PokemonService service;
 
-    public HabilidadController(HabilidadRepository repository, PokemonService service) {
+    public HabilidadController(HabilidadRepository repository) {
         this.repository = repository;
-        this.service = service;
     }
 
     @GetMapping
-    public List<HabilidadesResumenDTO> getAll(){
-        return repository.findAll()
-                .stream()
-                .map( h -> new HabilidadesResumenDTO(h.getId_habilidad(), h.getNombre()))
-                .toList();
+    public List<Habilidades> getAllHabilidades(){
+        return repository.findAll();
     }
 
     @GetMapping("/{id_habilidad}")
-    public ResponseEntity<HabilidadesDTO> getById(@PathVariable Long id_habilidad) {
-        Optional<Habilidades> habilidades = repository.findById(id_habilidad);
-        return habilidades.map(value -> ResponseEntity.ok(service.toDTO(value)))
-                .orElseGet(()-> ResponseEntity.notFound().build());
+    public Habilidades obtener(@PathVariable Long id_habilidad) {
+        return repository.findById(id_habilidad);
     }
 }

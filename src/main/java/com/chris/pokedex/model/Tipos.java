@@ -5,71 +5,16 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
-@Entity
-@Table(name = "tipos")
+
 public class Tipos {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id_tipo;
-
-
     private String nombre;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "doble_daño_de",
-            joinColumns = @JoinColumn(name = "id_tipo1"),
-            inverseJoinColumns = @JoinColumn(name = "id_tipo2")
-    )
-    private List<Tipos> dobleDañoDe;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "doble_daño_a",
-            joinColumns = @JoinColumn(name = "id_tipo1"),
-            inverseJoinColumns = @JoinColumn(name = "id_tipo2")
-    )
-    private List<Tipos> dobleDañoA;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "mitad_daño_de",
-            joinColumns = @JoinColumn(name = "id_tipo1"),
-            inverseJoinColumns = @JoinColumn(name = "id_tipo2")
-    )
-    private List<Tipos> mitadDañoDe;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "mitad_daño_a",
-            joinColumns = @JoinColumn(name = "id_tipo1"),
-            inverseJoinColumns = @JoinColumn(name = "id_tipo2")
-    )
-    private List<Tipos> mitadDañoA;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "sin_daño_de",
-            joinColumns = @JoinColumn(name = "id_tipo1"),
-            inverseJoinColumns = @JoinColumn(name = "id_tipo2")
-    )
-    private List<Tipos> sinDañoDe;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "sin_daño_a",
-            joinColumns = @JoinColumn(name = "id_tipo1"),
-            inverseJoinColumns = @JoinColumn(name = "id_tipo2")
-    )
-    private List<Tipos> sinDañoA;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "pokemon_tipo",
-            joinColumns = @JoinColumn(name = "id_tipo"),
-            inverseJoinColumns = @JoinColumn(name = "id_pokemon")
-    )
+    private List<Tipos> dobleDanioDe;
+    private List<Tipos> dobleDanioA;
+    private List<Tipos> mitadDanioDe;
+    private List<Tipos> mitadDanioA;
+    private List<Tipos> sinDanioDe;
+    private List<Tipos> sinDanioA;
     private List<Pokeapi> pokemons;
 
     public Long getId_tipo() {
@@ -88,52 +33,52 @@ public class Tipos {
         this.nombre = nombre;
     }
 
-    public List<Tipos> getDobleDañoDe() {
-        return dobleDañoDe;
+    public List<Tipos> getDobleDanioDe() {
+        return dobleDanioDe;
     }
 
-    public void setDobleDañoDe(List<Tipos> dobleDañoDe) {
-        this.dobleDañoDe = dobleDañoDe;
+    public void setDobleDanioDe(List<Tipos> dobleDanioDe) {
+        this.dobleDanioDe = dobleDanioDe;
     }
 
-    public List<Tipos> getDobleDañoA() {
-        return dobleDañoA;
+    public List<Tipos> getDobleDanioA() {
+        return dobleDanioA;
     }
 
-    public void setDobleDañoA(List<Tipos> dobleDañoA) {
-        this.dobleDañoA = dobleDañoA;
+    public void setDobleDanioA(List<Tipos> dobleDanioA) {
+        this.dobleDanioA = dobleDanioA;
     }
 
-    public List<Tipos> getMitadDañoDe() {
-        return mitadDañoDe;
+    public List<Tipos> getMitadDanioDe() {
+        return mitadDanioDe;
     }
 
-    public void setMitadDañoDe(List<Tipos> mitadDañoDe) {
-        this.mitadDañoDe = mitadDañoDe;
+    public void setMitadDanioDe(List<Tipos> mitadDanioDe) {
+        this.mitadDanioDe = mitadDanioDe;
     }
 
-    public List<Tipos> getMitadDañoA() {
-        return mitadDañoA;
+    public List<Tipos> getMitadDanioA() {
+        return mitadDanioA;
     }
 
-    public void setMitadDañoA(List<Tipos> mitadDañoA) {
-        this.mitadDañoA = mitadDañoA;
+    public void setMitadDanioA(List<Tipos> mitadDanioA) {
+        this.mitadDanioA = mitadDanioA;
     }
 
-    public List<Tipos> getSinDañoDe() {
-        return sinDañoDe;
+    public List<Tipos> getSinDanioDe() {
+        return sinDanioDe;
     }
 
-    public void setSinDañoDe(List<Tipos> sinDañoDe) {
-        this.sinDañoDe = sinDañoDe;
+    public void setSinDanioDe(List<Tipos> sinDanioDe) {
+        this.sinDanioDe = sinDanioDe;
     }
 
-    public List<Tipos> getSinDañoA() {
-        return sinDañoA;
+    public List<Tipos> getSinDanioA() {
+        return sinDanioA;
     }
 
-    public void setSinDañoA(List<Tipos> sinDañoA) {
-        this.sinDañoA = sinDañoA;
+    public void setSinDanioA(List<Tipos> sinDanioA) {
+        this.sinDanioA = sinDanioA;
     }
 
     public List<Pokeapi> getPokemons() {

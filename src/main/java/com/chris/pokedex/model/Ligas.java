@@ -5,23 +5,11 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
-@Entity
-@Table(name = "ligas")
+
 public class Ligas {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_liga;
-
     private String nombre;
-
-    @OneToMany(mappedBy = "liga", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Pokeapi> pokemons;
-
-    public Ligas() {}
-
-    public Ligas(String nombre) {
-        this.nombre = nombre;
-    }
 
     public Long getId_liga() {
         return id_liga;

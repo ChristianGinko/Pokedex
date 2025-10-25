@@ -1,37 +1,17 @@
 package com.chris.pokedex.model;
 
-import jakarta.persistence.*;
-
 import java.util.List;
 
-@Entity
-@Table(name = "pokemons")
+
 public class Pokeapi {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_pokemon;
-
     private String nombre;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "pokemon_tipo",
-            joinColumns = @JoinColumn(name = "id_pokemon"),
-            inverseJoinColumns = @JoinColumn(name = "id_tipo")
-    )
-    private List<Tipos> tipo;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "pokemon_habilidad",
-            joinColumns = @JoinColumn(name = "id_pokemon"),
-            inverseJoinColumns = @JoinColumn(name = "id_habilidad")
-    )
-    private List<Habilidades> habilidad;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_liga", nullable = false)
+    private List<Tipos> tipos;
+    private List<Habilidades> habilidades;
     private Ligas liga;
+
+    public Pokeapi() {
+    }
 
     public Long getId_pokemon() {
         return id_pokemon;
@@ -49,20 +29,20 @@ public class Pokeapi {
         this.nombre = nombre;
     }
 
-    public List<Tipos> getTipo() {
-        return tipo;
+    public List<Tipos> getTipos() {
+        return tipos;
     }
 
-    public void setTipo(List<Tipos> tipo) {
-        this.tipo = tipo;
+    public void setTipos(List<Tipos> tipos) {
+        this.tipos = tipos;
     }
 
-    public List<Habilidades> getHabilidad() {
-        return habilidad;
+    public List<Habilidades> getHabilidades() {
+        return habilidades;
     }
 
-    public void setHabilidad(List<Habilidades> habilidad) {
-        this.habilidad = habilidad;
+    public void setHabilidades(List<Habilidades> habilidades) {
+        this.habilidades = habilidades;
     }
 
     public Ligas getLiga() {
