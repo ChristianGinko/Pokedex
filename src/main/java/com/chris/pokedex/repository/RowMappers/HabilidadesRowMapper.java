@@ -1,3 +1,4 @@
+/*
 package com.chris.pokedex.repository.RowMappers;
 
 import com.chris.pokedex.model.Habilidades;
@@ -17,3 +18,4 @@ public class HabilidadesRowMapper implements RowMapper<Habilidades> {
         return h;
     }
 }
+*/

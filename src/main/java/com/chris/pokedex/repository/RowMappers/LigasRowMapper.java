@@ -1,3 +1,4 @@
+/*
 package com.chris.pokedex.repository.RowMappers;
 
 import com.chris.pokedex.model.Ligas;
@@ -15,3 +16,4 @@ public class LigasRowMapper implements RowMapper<Ligas> {
         return l;
     }
 }
+*/

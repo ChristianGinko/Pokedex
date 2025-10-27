@@ -37,8 +37,16 @@ public class PokemonRepository {
 
     public Optional<Pokeapi> findPokeById(Long id_pokemon){
         String sql = "SELECT id_pokemon, nombre FROM pokemons WHERE id_pokemon = ?";
-        return jdbcTemplate.query(sql, new PokeapiRowMapper(), id_pokemon)
-                .stream().findFirst();
+
+        return jdbcTemplate.query(sql, new Object[]{id_pokemon}, rs -> {
+            if (rs.next()) {
+                Pokeapi p = new Pokeapi();
+                p.setId_pokemon(rs.getLong("id_pokemon"));
+                p.setNombre(rs.getString("nombre"));
+                return Optional.of(p);
+            }
+            return Optional.empty();
+                });
     }
 
     public List<Tipos> findTipoByPokemon(Long id_pokemon){
@@ -47,7 +55,16 @@ public class PokemonRepository {
                 "INNER JOIN pokemon_tipo pt ON t.id_tipo = pt.id_tipo "+
                 "INNER JOIN pokemons p ON pt.id_pokemon = p.id_pokemon "+
                 "WHERE p.id_pokemon = ?";
-        return jdbcTemplate.query(sql, new TiposRowMapper(), id_pokemon);
+        return jdbcTemplate.query(sql, new Object[]{id_pokemon}, rs -> {
+            List<Tipos> tipos = new ArrayList<>();
+            while(rs.next()){
+                Tipos t = new Tipos();
+                t.setId_tipo(rs.getLong("id_tipo"));
+                t.setNombre(rs.getString("nombre"));
+                tipos.add(t);
+            }
+            return tipos;
+        });
     }
 
     public List<Habilidades> findHabilidadByPokemon(Long id_pokemon){
@@ -56,7 +73,16 @@ public class PokemonRepository {
                 "INNER JOIN pokemon_habilidad ph ON h.id_habilidad = ph.id_habilidad "+
                 "INNER JOIN pokemons p ON ph.id_pokemon = p.id_pokemon "+
                 "WHERE p.id_pokemon = ?";
-        return jdbcTemplate.query(sql, new HabilidadesRowMapper(), id_pokemon);
+        return jdbcTemplate.query(sql, new Object[]{id_pokemon}, rs -> {
+            List<Habilidades> habilidades = new ArrayList<>();
+            while(rs.next()){
+                Habilidades h = new Habilidades();
+                h.setId_habilidad(rs.getLong("id_habilidad"));
+                h.setNombre(rs.getString("nombre"));
+                habilidades.add(h);
+            }
+            return habilidades;
+        });
     }
 
     public Optional<Ligas> findLigaByPokemon(Long id_pokemon){
@@ -64,8 +90,15 @@ public class PokemonRepository {
                 "FROM ligas l "+
                 "INNER JOIN pokemons p ON l.id_liga = p.id_liga "+
                 "WHERE p.id_pokemon = ?";
-        return jdbcTemplate.query(sql, new LigasRowMapper(), id_pokemon)
-                .stream().findFirst();
+        return jdbcTemplate.query(sql, new Object[]{id_pokemon}, rs-> {
+            if(rs.next()){
+                Ligas l = new Ligas();
+                l.setId_liga(rs.getLong("id_liga"));
+                l.setNombre(rs.getString("nombre"));
+                return Optional.of(l);
+            }
+            return Optional.empty();
+                });
     }
 
 }

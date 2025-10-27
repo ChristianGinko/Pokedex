@@ -2,8 +2,6 @@ package com.chris.pokedex.repository;
 
 import com.chris.pokedex.model.Habilidades;
 import com.chris.pokedex.model.Pokeapi;
-import com.chris.pokedex.repository.RowMappers.HabilidadesRowMapper;
-import com.chris.pokedex.repository.RowMappers.PokeapiRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -33,8 +31,15 @@ public class HabilidadRepository {
 
     public Optional<Habilidades> findHabilidadById(Long id_habilidad){
         String sql = "SELECT id_habilidad, nombre, efecto, efecto_corto FROM habilidades WHERE id_habilidad = ?";
-        return jdbcTemplate.query(sql, new HabilidadesRowMapper(), id_habilidad)
-                .stream(). findFirst();
+        return jdbcTemplate.query(sql, new Object[]{id_habilidad}, rs -> {
+            if(rs.next()){
+                Habilidades h = new Habilidades();
+                h.setId_habilidad(rs.getLong("id_habilidad"));
+                h.setNombre(rs.getString("nombre"));
+                return Optional.of(h);
+            }
+            return Optional.empty();
+                });
     }
 
     public List<Pokeapi> findPokemonsByHabilidad(Long id_habilidad){
@@ -43,6 +48,15 @@ public class HabilidadRepository {
                 "INNER JOIN pokemon_habilidad ph ON p.id_pokemon = ph.id_pokemon "+
                 "INNER JOIN habilidades h ON ph.id_habilidad = h.id_habilidad "+
                 "WHERE id_habilidad = ?";
-        return jdbcTemplate.query(sql, new PokeapiRowMapper(), id_habilidad);
+        return jdbcTemplate.query(sql, new Object[]{id_habilidad}, rs -> {
+            List<Pokeapi> pokemons = new ArrayList<>();
+            while(rs.next()){
+                Pokeapi p = new Pokeapi();
+                p.setId_pokemon(rs.getLong("id_pokemon"));
+                p.setNombre(rs.getString("nombre"));
+                pokemons.add(p);
+            }
+            return pokemons;
+        });
     }
 }

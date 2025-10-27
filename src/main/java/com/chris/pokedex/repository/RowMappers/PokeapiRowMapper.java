@@ -1,3 +1,4 @@
+/*
 package com.chris.pokedex.repository.RowMappers;
 
 import com.chris.pokedex.model.Pokeapi;
@@ -15,3 +16,4 @@ public class PokeapiRowMapper implements RowMapper<Pokeapi> {
         return p;
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.chris.pokedex.repository.RowMappers;
 
 import com.chris.pokedex.model.Tipos;
@@ -15,3 +16,4 @@ public class TiposRowMapper implements RowMapper<Tipos> {
         return t;
     }
 }
+*/
