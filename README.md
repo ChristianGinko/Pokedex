@@ -25,9 +25,10 @@ Como ocurre con toda API, se maneja por distintos endpoints con el objetivo de q
 El endpoint principal. Trae la lista completa con todos los pokémons de cada generación, solo con el id y el nombre del mismo. La idea es que, a través del PokemonController, el usuario realice un pedido que pase por el PokeapiService, luego por el PokemonRepository, y finalmente llegue al model Pokeapi para recabar los datos. Funciona así:
 </br>
 
-<h3>
+<details>
+<summary><h3>
   PokemonController (Controller):
-</h3>
+</h3></summary>
 
 A través de la función getAll, el PokemonController le envía una petición a la función getAllPokes del PokeapiService.
 
@@ -48,11 +49,12 @@ public class PokemonController {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
 PokeapiService (Service):
-</h3>
+</h3></summary>
 
 Recibe la petición de parte del PokemonController. A raíz de ello, utiliza la función getAllPokes para realizar otra petición a la función findAll del PokemonRepository.
 
@@ -72,11 +74,12 @@ public class PokeapiService {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   PokemonRepository (Repository):
-</h3>
+</h3></summary>
 
 Recibe la petición del PokeapiService. Debido a ello, utiliza la función findAll para realizar la consulta SQL y traer los datos desde Pokeapi.
 
@@ -102,11 +105,12 @@ public class PokemonRepository {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
 Pokeapi (Model):
-</h3>
+</h3></summary>
 
 Almacena los datos que pide PokemonRepository. En este caso, devuelve el id y el nombre de todos los pokémons.
 
@@ -137,6 +141,7 @@ public class Pokeapi {
 }
 ```
 </details>
+</details>
 
 <details>
 <summary><h2>
@@ -146,9 +151,10 @@ public class Pokeapi {
 El endpoint para contar con todos los datos del pokémon. Una vez que conoces el id del pokémon cuyas estadísticas deseas ver, solo lo agregas al final y te traerá ese pokémon con sus tipos, habilidades, y hasta la liga correspondiente. Funciona así:
 </br>
 
-<h3>
+<details>
+<summary><h3>
   PokemonController (Controller):
-</h3>
+</h3></summary>
 
 A través de la función getById, realiza una petición a la función getPokeCompleto de PokeapiService. Además, se agrega "/{id_pokemon}" al endpoint.
 
@@ -173,11 +179,12 @@ public class PokemonController {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   PokeapiService (Service):
-</h3>
+</h3></summary>
 
 Recibe la petición de la función getById del PokemonController. Acto seguido, y a través de la función getPokeCompleto, envía una petición a las funciones findPokeById, findTipoByPokemon, findHabilidadByPokemon y findLigaByPokemon, todas ellas del PokemonRepository.
 
@@ -206,11 +213,12 @@ public class PokeapiService {
 
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   PokemonRepository (Repository):
-</h3>
+</h3></summary>
 
 Recibe la petición de parte de la función getPokeCompleto del PokeapiService. Las funciones llamadas (findPokeById, findTipoByPokemon, findHabilidadByPokemon y findLigaByPokemon) realizan las consultas SQL pertinentes a los models correspondientes.
 
@@ -293,11 +301,12 @@ public class PokemonRepository {
 
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Pokeapi (Model):
-</h3>
+</h3></summary>
 
 Recibe la petición de parte de la función findPokeById del PokemonRepository. A raíz de ello, envía los datos completos con id del pokémon, nombre, tipos, habilidades, y liga.
 
@@ -354,11 +363,12 @@ public class Pokeapi {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Tipos (Model):
-</h3>
+</h3></summary>
 
 Recibe la petición de la función findTipoByPokemon del PokemonRepository. A raíz de ello, envía el id y el nombre de los tipos que corresponden a ese pokémon.
 
@@ -385,11 +395,12 @@ public class Tipos {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Habilidades (Model):
-</h3>
+</h3></summary>
 
 Recibe la petición de la función findHabilidadByPokemon del PokemonRepository. A raíz de ello, envía el id y el nombre de las habilidades que corresponden a ese pokémon.
 
@@ -419,11 +430,12 @@ public class Habilidades {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Ligas (Model):
-</h3>
+</h3></summary>
 
 Recibe la petición de la función findLigaByPokemon del PokemonRepository. A raíz de ello, envía el id y el nombre de la liga correspondiente a ese pokémon.
 
@@ -452,6 +464,7 @@ public class Ligas {
 
 ```
 </details>
+</details>
 
 <details>
 <summary><h2>
@@ -461,9 +474,10 @@ public class Ligas {
 La lista de todos los tipos posibles. Al igual que ocurre con la lista completa de pokémons, en este endpoint solo se podrá ver el id y el nombre del tipo. Funciona así:
 </br>
 
-<h3>
+<details>
+<summary><h3>
   TipoController (Controller):
-</h3>
+</h3></summary>
 
 A través de la función getAll, realiza una petición a la función getAllTipos de TipoService.
 
@@ -485,11 +499,12 @@ public class TipoController {
 
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   TipoService (Service):
-</h3>
+</h3></summary>
 
 Al haber sido llamada la función getAllTipos de parte de TipoController, la misma llama a la función findAll de TipoRepository.
 
@@ -510,11 +525,12 @@ public class TipoService {
 
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   TipoRepository (Repository):
-</h3>
+</h3></summary>
 
 La función findAll de TipoRepository se activa y realiza una consulta SQL al model Tipos en la que pide la lista completa de id y nombre de los tipos.
 
@@ -540,11 +556,12 @@ public class TipoRepository {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Tipos (Model)
-</h3>
+</h3></summary>
 
 El model Tipos responde a la petición de la función findAll de TipoRepository y, acto seguido, envía los id y nombres de todos los tipos.
 
@@ -572,6 +589,7 @@ public class Tipos {
 }
 ```
 </details>
+</details>
 
 <details>
 <summary><h2>
@@ -581,9 +599,10 @@ public class Tipos {
 Este endpoint trae toda la data de un determinado tipo, desde fortalezas y debilidades hasta incluso la lista completa de los pokémons que son de ese determinado tipo. Funciona así:
 </br>
 
-<h3>
+<details>
+<summary><h3>
   TipoController (Controller):
-</h3>
+</h3></summary>
 
 Utiliza la función getById para llamar a la función getTipoCompleto del TipoService. Además, se agrega "/{id_tipo}" al endpoint.
 
@@ -609,11 +628,12 @@ public class TipoController {
 
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   TipoService (Service):
-</h3>
+</h3></summary>
 
 La función getTipoCompleto es activada desde TipoController. Acto seguido, llama a las funciones findTipoById, findDobleDanioDeByTipo, findDobleDanioAByTipo, findMitadDanioDeByTipo, findMitadDanioAByTipo, findSinDanioDeByTipo, findSinDanioAByTipo y findPokeByTipo que hay en el TipoRepository.
 
@@ -644,11 +664,12 @@ public class TipoService {
 
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   TipoRepository (Repository):
-</h3>
+</h3></summary>
 
 Las funciones findTipoById, findDobleDanioDeByTipo, findDobleDanioAByTipo, findMitadDanioDeByTipo, findMitadDanioAByTipo, findSinDanioDeByTipo, findSinDanioAByTipo y findPokeByTipo son llamadas desde TipoService. Esto hace que, a través de las consultas SQL realizadas en cada una, TipoRepository se comunique con los models Tipos y Pokeapi.
 
@@ -796,11 +817,12 @@ public class TipoRepository {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Tipos (Model):
-</h3>
+</h3></summary>
 
 Las funciones findTipoById, findDobleDanioDeByTipo, findDobleDanioAByTipo, findMitadDanioDeByTipo, findMitadDanioAByTipo, findSinDanioDeByTipo y findSinDanioAByTipo realizan consultas SQL a este model. El primero son datos que ya tiene por defecto la tabla, los demás son reconocidos por tablas intermedias que conectan a los id_tipo.
 
@@ -890,11 +912,12 @@ public class Tipos {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Pokeapi (Model):
-</h3>
+</h3></summary>
 
 La función findPokeByTipo llama al model Pokeapi, que envía el id y el nombre de los pokémons pertenecientes al tipo solicitado.
 
@@ -925,6 +948,7 @@ public class Pokeapi {
 }
 ```
 </details>
+</details>
 
 <details>
 <summary><h2>
@@ -934,9 +958,10 @@ public class Pokeapi {
 Se trata de la lista completa de habilidades disponibles. En ella podrán ver el id y el nombre de cada una. Funciona así:
 </br>
 
-<h3>
+<details>
+<summary><h3>
   HabilidadController (Controller):
-</h3>
+</h3></summary>
 
 A través de la función getAll, HabilidadController envía una petición a la función getAllHabilidades de HabilidadService.
 
@@ -957,11 +982,12 @@ public class HabilidadController {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   HabilidadService (Service):
-</h3>
+</h3></summary>
 
 La función getAllHabilidades es activada desde HabilidadController, y esto hace que HabilidadService le envíe una petición a la función findAll de HabilidadRepository.
 
@@ -981,11 +1007,12 @@ public class HabilidadService {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   HabilidadRepository (Repository):
-</h3>
+</h3></summary>
 
 La función findAll es activada desde HabilidadService. La misma realiza la consulta SQL adecuada y envía la misma al model Habilidades con tal de conseguir el id_habilidad y el nombre de todas las habilidades.
 
@@ -1012,11 +1039,12 @@ public class HabilidadRepository {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Habilidades (Model):
-</h3>
+</h3></summary>
 
 Recibe la consulta SQL realizada por la función findAll de HabilidadesRepository. A raíz de ello, envía los id y los nombres de todas las habilidades existentes.
 
@@ -1047,6 +1075,7 @@ public class Habilidades {
 }
 ```
 </details>
+</details>
 
 <details>
 <summary><h2>
@@ -1056,9 +1085,10 @@ public class Habilidades {
 En este caso se podrá ver el efecto de una habilidad determinada agregando el id. Además, también traerá la lista completa de pokémons que cuentan con ella. Funciona así:
 </br>
 
-<h3>
+<details>
+<summary><h3>
   HabilidadController (Controller):
-</h3>
+</h3></summary>
 
 A través de la función getById, HabilidadController envía una petición a la función getHabilidadCompleta de HabilidadService. Además, agrega "/{id_habilidad}" al endpoint.
 
@@ -1084,11 +1114,12 @@ public class HabilidadController {
 
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   HabilidadService (Service):
-</h3>
+</h3></summary>
 
 La función getHabilidadCompleta es activada desde HabilidadController. A raíz de ello, HabilidadService envía peticiones a las funciones findHabilidadById y findPokemonsByHabilidad de HabilidadRepository.
 
@@ -1113,11 +1144,12 @@ public class HabilidadService {
 
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   HabilidadRepository (Repository):
-</h3>
+</h3></summary>
 
 Las funciones findHabilidadById y findPokemonsByHabilidad son activadas desde HabilidadService. Las mismas realizan las consultas SQL pertinentes a los models Habilidades y Pokeapi.
 
@@ -1164,11 +1196,12 @@ public class HabilidadRepository {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Habilidades (Model):
-</h3>
+</h3></summary>
 
 Recibe la consulta SQL de parte de la función findHabilidadById de HabilidadRepository, que le pide id, nombre, efecto y efecto_corto. Envía estos datos en base a la habilidad requerida.
 
@@ -1225,11 +1258,12 @@ public class Habilidades {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Pokeapi (Model):
-</h3>
+</h3></summary>
 
 Recibe la petición de parte de la función findPokemonsByHabilidad de HabilidadRepository, que le pide la lista completa de los pokémons que poseen esa habilidad. Acto seguido, envía los datos.
 
@@ -1260,6 +1294,7 @@ public class Pokeapi {
 }
 ```
 </details>
+</details>
 
 <details>
 <summary><h2>
@@ -1269,9 +1304,10 @@ public class Pokeapi {
 Este endpoint trae la lista completa de ligas disponibles, solo con su id y nombre. Funciona así:
 </br>
 
-<h3>
+<details>
+<summary><h3>
   LigaController (Controller):
-</h3>
+</h3></summary>
 
 A través de la función getAll, envía una petición a la función getAllLigas de LigaService.
 
@@ -1291,11 +1327,12 @@ public class LigasController {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   LigaService (Service):
-</h3>
+</h3></summary>
 
 La función getAllLigas es activada desde LigasController. Debido a esto, envía una petición a la función findAll de LigaRepository.
 
@@ -1315,11 +1352,12 @@ public class LigaService {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   LigaRepository (Repository):
-</h3>
+</h3></summary>
 
 La función findAll es activada desde LigaService. Esta realiza la consulta SQL que pide id y nombre de cada liga al model Ligas.
   
@@ -1345,11 +1383,12 @@ public class LigaRepository {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Ligas (Model):
-</h3>
+</h3></summary>
 
 Recibe la consulta SQL desde LigaRepository. Acto seguido, envía los datos id_liga y nombre pedidos desde allí.
 
@@ -1378,6 +1417,7 @@ public class Ligas {
 }
 ```
 </details>
+</details>
 
 <details>
 <summary><h2>
@@ -1386,9 +1426,10 @@ public class Ligas {
 Este endpoint está hecho con el objetivo de traer los pokémons por generación. Es decir, se coloca el id de la liga deseada y no solo traerá el id y el nombre de la liga, sino también la lista de pokémons correspondientes a ella. Funciona así:
 </br>
 
-<h3>
+<details>
+<summary><h3>
   LigasController (Controller):
-</h3>
+</h3></summary>
 
 A través de la función getById, envía una petición a la función getLigaCompleta de LigaService. Además, agrega "/{id_liga}" al endpoint.
 
@@ -1413,11 +1454,12 @@ public class LigasController {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   LigaService (Service):
-</h3>
+</h3></summary>
 
 La función getLigaCompleta es activada desde LigasController. A raíz de ello, LigaService envía peticiones a las funciones findLigaById y findPokemonsByLiga de LigaRepository.
 
@@ -1441,11 +1483,12 @@ public class LigaService {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   LigaRepository (Repository):
-</h3>
+</h3></summary>
 
 Las funciones findLigaById y findPokemonsByLiga son activadas desde LigaService. Estas realizan las consultas SQL a los models Ligas y Pokeapi.
 
@@ -1488,11 +1531,12 @@ public class LigaRepository {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Ligas (Model):
-</h3>
+</h3></summary>
 
 Recibe la consulta SQL desde LigaRepository, que le pide id_liga, nombre y la lista de los pokémons correspondientes a la liga. Envía los datos en conjunto con el model de Pokeapi.
 
@@ -1528,11 +1572,12 @@ public class Ligas {
     }
 }
 ```
-</br>
+</details>
 
-<h3>
+<details>
+<summary><h3>
   Pokeapi (Model):
-</h3>
+</h3></summary>
 
 Como el model de Ligas carece de los id_pokemon y los nombres de los pokémons, Pokeapi también recibe una consulta SQL para enviar dichos datos. A raíz de ello, Pokeapi envía los datos para completar la tabla de pokémons correspondientes a la liga consultada.
 
@@ -1562,4 +1607,5 @@ public class Pokeapi {
     }
 }
 ```
+</details>
 </details>
