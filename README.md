@@ -18,6 +18,7 @@ Como ocurre con toda API, se maneja por distintos endpoints con el objetivo de q
 
 <h1>Endpoints</h1>
 
+<details><summary><h2>Pokémons</h2></summary>
 <details>
 <summary><h2>
   "/api/pokemon"
@@ -452,7 +453,9 @@ public class Ligas {
 
 ```
 </details>
+</details>
 
+<details><summary><h2>Tipos</h2></summary>
 <details>
 <summary><h2>
   "/api/tipo"
@@ -925,7 +928,9 @@ public class Pokeapi {
 }
 ```
 </details>
+</details>
 
+<details><summary><h2>Habilidades</h2></summary>
 <details>
 <summary><h2>
   "/api/habilidad"
@@ -1260,7 +1265,9 @@ public class Pokeapi {
 }
 ```
 </details>
+</details>
 
+<details><summary><h2>Ligas</h2></summary>
 <details>
 <summary><h2>
   "/api/ligas"
@@ -1562,4 +1569,5 @@ public class Pokeapi {
     }
 }
 ```
+</details>
 </details>
