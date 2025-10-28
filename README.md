@@ -11,7 +11,7 @@ Pokédex es un proyecto de API hecho para fanáticos y no tan fanáticos de Pok�
 <h2>
   ¿Cómo funciona?
 </h2>
-Como ocurre con toda API, se maneja por distintos endpoints con el objetivo de que los usuarios puedan recabar solamente la información que les haga falta en el momento. A continuación se detallará cada endpoint y cómo funciona.   
+Como ocurre con toda API, se maneja por distintos endpoints con el objetivo de que los usuarios puedan recabar solamente la información que les haga falta en el momento. La estructura es bastante sencilla de entender: el controller le envía una petición al service correspondiente, el service al repository, y el repository al o a los models que haga falta, ya que en el caso de los datos completos se necesita hacer consultas a más de uno. A continuación se detallará cada endpoint y cómo funciona.   
 
 <h3>
   "/api/pokemon"
@@ -1142,6 +1142,159 @@ public class Ligas {
 
     public void setId_liga(Long id_liga) {
         this.id_liga = id_liga;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+}
+```
+
+<h3>
+  "/api/ligas/{id_liga}"
+</h3>
+Este endpoint está hecho con el objetivo de traer los pokémons por generación. Es decir, se coloca el id de la liga deseada y no solo traerá el id y el nombre de la liga, sino también la lista de pokémons correspondientes a ella. Funciona así:
+
+LigasController (Controller):
+```js
+@RestController
+@RequestMapping("/api/ligas")
+public class LigasController {
+
+    private final LigaService service;
+
+    public LigasController(LigaService service) {
+        this.service = service;
+    }
+
+    @GetMapping("/{id_liga}")
+    public ResponseEntity<Ligas> getById(@PathVariable Long id_liga){
+        try{
+            return ResponseEntity.ok(service.getLigaCompleta(id_liga));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+}
+```
+
+LigaService (Service):
+```js
+@Service
+public class LigaService {
+
+    private LigaRepository repository;
+
+    @Autowired
+    public LigaService(LigaRepository repository) {
+        this.repository = repository;
+    }
+
+    public Ligas getLigaCompleta(Long id_liga) {
+        Ligas liga = repository.findLigaById(id_liga)
+                .orElseThrow(()-> new RuntimeException("Liga no encontrada"));
+
+        liga.setPokemons(repository.findPokemonsByLiga(id_liga));
+        return liga;
+    }
+}
+```
+
+LigaRepository (Repository):
+```js
+@Repository
+public class LigaRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public LigaRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public Optional<Ligas> findLigaById(Long id_liga){
+        String sql = "SELECT id_liga, nombre FROM ligas WHERE id_liga = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_liga}, rs -> {
+            if(rs.next()){
+                Ligas l = new Ligas();
+                l.setId_liga(rs.getLong("id_liga"));
+                l.setNombre(rs.getString("nombre"));
+                return Optional.of(l);
+            }
+            return Optional.empty();
+                });
+    }
+
+    public List<Pokeapi> findPokemonsByLiga(Long id_liga){
+        String sql = "SELECT id_pokemon, nombre FROM pokemons WHERE id_liga = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_liga}, rs -> {
+            List<Pokeapi> pokemons = new ArrayList<>();
+            while(rs.next()){
+                Pokeapi p = new Pokeapi();
+                p.setId_pokemon(rs.getLong("id_pokemon"));
+                p.setNombre(rs.getString("nombre"));
+                pokemons.add(p);
+            }
+            return pokemons;
+        });
+    }
+}
+```
+
+Ligas (Model):
+```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Ligas {
+    private Long id_liga;
+    private String nombre;
+    private List<Pokeapi> pokemons;
+
+    public Long getId_liga() {
+        return id_liga;
+    }
+
+    public void setId_liga(Long id_liga) {
+        this.id_liga = id_liga;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public List<Pokeapi> getPokemons() {
+        return pokemons;
+    }
+
+    public void setPokemons(List<Pokeapi> pokemons) {
+        this.pokemons = pokemons;
+    }
+}
+```
+
+Pokeapi (Model):
+```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Pokeapi {
+    private Long id_pokemon;
+    private String nombre;
+
+    public Pokeapi() {
+    }
+
+    public Long getId_pokemon() {
+        return id_pokemon;
+    }
+
+    public void setId_pokemon(Long id_pokemon) {
+        this.id_pokemon = id_pokemon;
     }
 
     public String getNombre() {
