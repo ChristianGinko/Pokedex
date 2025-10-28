@@ -8,7 +8,7 @@
   Descripción
 </h1>
 Pokédex es un proyecto de API hecho para fanáticos y no tan fanáticos de Pokémon. Se trata de un JSON abierto hecho para recabar la mayor cantidad de información posible sobre los pokémons de todas las generaciones. Incluso, también la idea es tener información sobre los tipos con sus fortalezas y debilidades, las descripciones de cada habilidad, y hasta que los usuarios puedan traer la lista por generación. Si bien la API ya cuenta con bastante info lista para ser utilizada, se encuentra en constante desarrollo con el objetivo de brindar cada vez más información.
-
+<br/>
 
 <h1>
   ¿Cómo funciona?
@@ -20,6 +20,7 @@ Como ocurre con toda API, se maneja por distintos endpoints con el objetivo de q
   "/api/pokemon"
 </h2
 El endpoint principal. Trae la lista completa con todos los pokémons de cada generación, solo con el id y el nombre del mismo. La idea es que, a través del PokemonController, el usuario realice un pedido que pase por el PokeapiService, luego por el PokemonRepository, y finalmente llegue al model Pokeapi para recabar los datos. Funciona así:
+</br>
 
 <h3>
   PokemonController (Controller):
@@ -44,6 +45,7 @@ public class PokemonController {
     }
 }
 ```
+</br>
 
 <h3>
 PokeapiService (Service):
@@ -67,6 +69,7 @@ public class PokeapiService {
     }
 }
 ```
+</br>
 
 <h3>
   PokemonRepository (Repository):
@@ -96,6 +99,7 @@ public class PokemonRepository {
     }
 }
 ```
+</br>
 
 <h3>
 Pokeapi (Model):
@@ -129,12 +133,14 @@ public class Pokeapi {
     }
 }
 ```
+</br>
 
 <h2>
   "/api/pokemon/{id_pokemon}"
 </h2>
 
 El endpoint para contar con todos los datos del pokémon. Una vez que conoces el id del pokémon cuyas estadísticas deseas ver, solo lo agregas al final y te traerá ese pokémon con sus tipos, habilidades, y hasta la liga correspondiente. Funciona así:
+</br>
 
 <h3>
   PokemonController (Controller):
@@ -163,6 +169,7 @@ public class PokemonController {
     }
 }
 ```
+</br>
 
 <h3>
   PokeapiService (Service):
@@ -195,6 +202,7 @@ public class PokeapiService {
 
 }
 ```
+</br>
 
 <h3>
   PokemonRepository (Repository):
@@ -281,6 +289,7 @@ public class PokemonRepository {
 
 }
 ```
+</br>
 
 <h3>
   Pokeapi (Model):
@@ -341,6 +350,7 @@ public class Pokeapi {
     }
 }
 ```
+</br>
 
 <h3>
   Tipos (Model):
@@ -371,6 +381,7 @@ public class Tipos {
     }
 }
 ```
+</br>
 
 <h3>
   Habilidades (Model):
@@ -404,6 +415,7 @@ public class Habilidades {
     }
 }
 ```
+</br>
 
 <h3>
   Ligas (Model):
@@ -435,12 +447,14 @@ public class Ligas {
 }
 
 ```
+</br>
 
 <h2>
   "/api/tipo"
 </h2>
 
 La lista de todos los tipos posibles. Al igual que ocurre con la lista completa de pokémons, en este endpoint solo se podrá ver el id y el nombre del tipo. Funciona así:
+</br>
 
 <h3>
   TipoController (Controller):
@@ -466,6 +480,7 @@ public class TipoController {
 
 }
 ```
+</br>
 
 <h3>
   TipoService (Service):
@@ -490,6 +505,7 @@ public class TipoService {
 
 }
 ```
+</br>
 
 <h3>
   TipoRepository (Repository):
@@ -519,6 +535,7 @@ public class TipoRepository {
     }
 }
 ```
+</br>
 
 <h3>
   Tipos (Model)
@@ -549,12 +566,14 @@ public class Tipos {
     }
 }
 ```
+</br>
 
 <h2>
   "/api/tipo/{id_tipo}"
 </h2>
 
 Este endpoint trae toda la data de un determinado tipo, desde fortalezas y debilidades hasta incluso la lista completa de los pokémons que son de ese determinado tipo. Funciona así:
+</br>
 
 <h3>
   TipoController (Controller):
@@ -584,6 +603,7 @@ public class TipoController {
 
 }
 ```
+</br>
 
 <h3>
   TipoService (Service):
@@ -618,6 +638,7 @@ public class TipoService {
 
 }
 ```
+</br>
 
 <h3>
   TipoRepository (Repository):
@@ -769,6 +790,7 @@ public class TipoRepository {
     }
 }
 ```
+</br>
 
 <h3>
   Tipos (Model):
@@ -862,6 +884,7 @@ public class Tipos {
     }
 }
 ```
+</br>
 
 <h3>
   Pokeapi (Model):
@@ -895,12 +918,14 @@ public class Pokeapi {
     }
 }
 ```
+</br>
 
 <h2>
   "/api/habilidad"
 </h2>
 
 Se trata de la lista completa de habilidades disponibles. En ella podrán ver el id y el nombre de cada una. Funciona así:
+</br>
 
 <h3>
   HabilidadController (Controller):
@@ -925,6 +950,7 @@ public class HabilidadController {
     }
 }
 ```
+</br>
 
 <h3>
   HabilidadService (Service):
@@ -948,6 +974,7 @@ public class HabilidadService {
     }
 }
 ```
+</br>
 
 <h3>
   HabilidadRepository (Repository):
@@ -978,6 +1005,7 @@ public class HabilidadRepository {
     }
 }
 ```
+</br>
 
 <h3>
   Habilidades (Model):
@@ -1011,12 +1039,14 @@ public class Habilidades {
     }
 }
 ```
+</br>
 
 <h2>
   "/api/habilidad/{id_habilidad}"
 </h2>
 
 En este caso se podrá ver el efecto de una habilidad determinada agregando el id. Además, también traerá la lista completa de pokémons que cuentan con ella. Funciona así:
+</br>
 
 <h3>
   HabilidadController (Controller):
@@ -1046,6 +1076,7 @@ public class HabilidadController {
 
 }
 ```
+</br>
 
 <h3>
   HabilidadService (Service):
@@ -1074,6 +1105,7 @@ public class HabilidadService {
 
 }
 ```
+</br>
 
 <h3>
   HabilidadRepository (Repository):
@@ -1124,6 +1156,7 @@ public class HabilidadRepository {
     }
 }
 ```
+</br>
 
 <h3>
   Habilidades (Model):
@@ -1184,6 +1217,7 @@ public class Habilidades {
     }
 }
 ```
+</br>
 
 <h3>
   Pokeapi (Model):
@@ -1217,12 +1251,14 @@ public class Pokeapi {
     }
 }
 ```
+</br>
 
 <h2>
   "/api/ligas"
 </h2>
 
 Este endpoint trae la lista completa de ligas disponibles, solo con su id y nombre. Funciona así:
+</br>
 
 <h3>
   LigaController (Controller):
@@ -1246,6 +1282,7 @@ public class LigasController {
     }
 }
 ```
+</br>
 
 <h3>
   LigaService (Service):
@@ -1269,6 +1306,7 @@ public class LigaService {
     }
 }
 ```
+</br>
 
 <h3>
   LigaRepository (Repository):
@@ -1298,6 +1336,7 @@ public class LigaRepository {
     }
 }
 ```
+</br>
 
 <h3>
   Ligas (Model):
@@ -1329,11 +1368,13 @@ public class Ligas {
     }
 }
 ```
+</br>
 
 <h2>
   "/api/ligas/{id_liga}"
 </h2>
 Este endpoint está hecho con el objetivo de traer los pokémons por generación. Es decir, se coloca el id de la liga deseada y no solo traerá el id y el nombre de la liga, sino también la lista de pokémons correspondientes a ella. Funciona así:
+</br>
 
 <h3>
   LigasController (Controller):
@@ -1362,6 +1403,7 @@ public class LigasController {
     }
 }
 ```
+</br>
 
 <h3>
   LigaService (Service):
@@ -1389,6 +1431,7 @@ public class LigaService {
     }
 }
 ```
+</br>
 
 <h3>
   LigaRepository (Repository):
@@ -1435,6 +1478,7 @@ public class LigaRepository {
     }
 }
 ```
+</br>
 
 <h3>
   Ligas (Model):
@@ -1474,6 +1518,7 @@ public class Ligas {
     }
 }
 ```
+</br>
 
 <h3>
   Pokeapi (Model):
@@ -1507,3 +1552,4 @@ public class Pokeapi {
     }
 }
 ```
+</br>
