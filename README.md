@@ -127,12 +127,18 @@ public class Pokeapi {
 }
 ```
 
-<h3>
+<h2>
   "/api/pokemon/{id_pokemon}"
-</h3>
+</h2>
+
 El endpoint para contar con todos los datos del pokémon. Una vez que conoces el id del pokémon cuyas estadísticas deseas ver, solo lo agregas al final y te traerá ese pokémon con sus tipos, habilidades, y hasta la liga correspondiente. Funciona así:
 
-PokemonController (Controller):
+<h3>
+  PokemonController (Controller):
+</h3>
+
+A través de la función getById, realiza una petición a la función getPokeCompleto de PokeapiService.
+
 ```js
 @RestController
 @RequestMapping("/api/pokemon")
@@ -155,7 +161,12 @@ public class PokemonController {
 }
 ```
 
-PokeapiService (Service):
+<h3>
+  PokeapiService (Service):
+</h3>
+
+Recibe la petición de la función getById del PokemonController. Acto seguido, y a través de la función getPokeCompleto, envía una petición a las funciones findPokeById, findTipoByPokemon, findHabilidadByPokemon y findLigaByPokemon, todas ellas del PokemonRepository.
+
 ```js
 @Service
 public class PokeapiService {
@@ -182,7 +193,12 @@ public class PokeapiService {
 }
 ```
 
-PokemonRepository (Repository):
+<h3>
+  PokemonRepository (Repository):
+</h3>
+
+Recibe la petición de parte de la función getPokeCompleto del PokeapiService. Las funciones llamadas (findPokeById, findTipoByPokemon, findHabilidadByPokemon y findLigaByPokemon) realizan las consultas SQL pertinentes a los models correspondientes.
+
 ```js
 @Repository
 public class PokemonRepository {
@@ -263,7 +279,12 @@ public class PokemonRepository {
 }
 ```
 
-Pokeapi (Model):
+<h3>
+  Pokeapi (Model):
+</h3>
+
+Recibe la petición de parte de la función findPokeById del PokemonRepository. A raíz de ello, envía los datos completos con id del pokémon, nombre, tipos, habilidades, y liga.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Pokeapi {
@@ -318,7 +339,12 @@ public class Pokeapi {
 }
 ```
 
-Tipos (Model):
+<h3>
+  Tipos (Model):
+</h3>
+
+Recibe la petición de la función findTipoByPokemon del PokemonRepository. A raíz de ello, envía el id y el nombre de los tipos que corresponden a ese pokémon.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Tipos {
@@ -343,7 +369,12 @@ public class Tipos {
 }
 ```
 
-Habilidades (Model):
+<h3>
+  Habilidades (Model):
+</h3>
+
+Recibe la petición de la función findHabilidadByPokemon del PokemonRepository. A raíz de ello, envía el id y el nombre de las habilidades que corresponden a ese pokémon.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Habilidades {
@@ -371,7 +402,12 @@ public class Habilidades {
 }
 ```
 
-Ligas (Model):
+<h3>
+  Ligas (Model):
+</h3>
+
+Recibe la petición de la función findLigaByPokemon del PokemonRepository. A raíz de ello, envía el id y el nombre de la liga correspondiente a ese pokémon.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Ligas {
