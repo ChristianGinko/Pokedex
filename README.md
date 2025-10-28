@@ -1022,7 +1022,7 @@ En este caso se podrá ver el efecto de una habilidad determinada agregando el i
   HabilidadController (Controller):
 </h3>
 
-A través de la función getById, HabilidadController envía una petición a la función getHabilidadCompleta de HabilidadService.
+A través de la función getById, HabilidadController envía una petición a la función getHabilidadCompleta de HabilidadService. Además, agrega "/{id_habilidad}" al endpoint.
 
 ```js
 @RestController
@@ -1218,12 +1218,18 @@ public class Pokeapi {
 }
 ```
 
-<h3>
+<h2>
   "/api/ligas"
-</h3>
+</h2>
+
 Este endpoint trae la lista completa de ligas disponibles, solo con su id y nombre. Funciona así:
 
-LigaController (Controller):
+<h3>
+  LigaController (Controller):
+</h3>
+
+A través de la función getAll, envía una petición a la función getAllLigas de LigaService.
+
 ```js
 @RestController
 @RequestMapping("/api/ligas")
@@ -1241,7 +1247,12 @@ public class LigasController {
 }
 ```
 
-LigaService (Service):
+<h3>
+  LigaService (Service):
+</h3>
+
+La función getAllLigas es activada desde LigasController. Debido a esto, envía una petición a la función findAll de LigaRepository.
+
 ```js
 @Service
 public class LigaService {
@@ -1259,7 +1270,12 @@ public class LigaService {
 }
 ```
 
-LigaRepository (Repository):
+<h3>
+  LigaRepository (Repository):
+</h3>
+
+La función findAll es activada desde LigaService. Esta realiza la consulta SQL que pide id y nombre de cada liga al model Ligas.
+  
 ```js
 @Repository
 public class LigaRepository {
@@ -1283,7 +1299,12 @@ public class LigaRepository {
 }
 ```
 
-Ligas (Model):
+<h3>
+  Ligas (Model):
+</h3>
+
+Recibe la consulta SQL desde LigaRepository. Acto seguido, envía los datos id_liga y nombre pedidos desde allí.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Ligas {
@@ -1309,12 +1330,17 @@ public class Ligas {
 }
 ```
 
-<h3>
+<h2>
   "/api/ligas/{id_liga}"
-</h3>
+</h2>
 Este endpoint está hecho con el objetivo de traer los pokémons por generación. Es decir, se coloca el id de la liga deseada y no solo traerá el id y el nombre de la liga, sino también la lista de pokémons correspondientes a ella. Funciona así:
 
-LigasController (Controller):
+<h3>
+  LigasController (Controller):
+</h3>
+
+A través de la función getById, envía una petición a la función getLigaCompleta de LigaService. Además, agrega "/{id_liga}" al endpoint.
+
 ```js
 @RestController
 @RequestMapping("/api/ligas")
@@ -1337,7 +1363,12 @@ public class LigasController {
 }
 ```
 
-LigaService (Service):
+<h3>
+  LigaService (Service):
+</h3>
+
+La función getLigaCompleta es activada desde LigasController. A raíz de ello, LigaService envía peticiones a las funciones findLigaById y findPokemonsByLiga de LigaRepository.
+
 ```js
 @Service
 public class LigaService {
@@ -1359,7 +1390,12 @@ public class LigaService {
 }
 ```
 
-LigaRepository (Repository):
+<h3>
+  LigaRepository (Repository):
+</h3>
+
+Las funciones findLigaById y findPokemonsByLiga son activadas desde LigaService. Estas realizan las consultas SQL a los models Ligas y Pokeapi.
+
 ```js
 @Repository
 public class LigaRepository {
@@ -1400,7 +1436,12 @@ public class LigaRepository {
 }
 ```
 
-Ligas (Model):
+<h3>
+  Ligas (Model):
+</h3>
+
+Recibe la consulta SQL desde LigaRepository, que le pide id_liga, nombre y la lista de los pokémons correspondientes a la liga. Envía los datos en conjunto con el model de Pokeapi.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Ligas {
@@ -1434,7 +1475,12 @@ public class Ligas {
 }
 ```
 
-Pokeapi (Model):
+<h3>
+  Pokeapi (Model):
+</h3>
+
+Como el model de Ligas carece de los id_pokemon y los nombres de los pokémons, Pokeapi también recibe una consulta SQL para enviar dichos datos. A raíz de ello, Pokeapi envía los datos para completar la tabla de pokémons correspondientes a la liga consultada.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Pokeapi {
