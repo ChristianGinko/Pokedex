@@ -20,20 +20,52 @@ El endpoint principal. Trae la lista completa con todos los pokémons de cada ge
 
 PokemonController (Controller):
 ```js
+@RestController
+@RequestMapping("/api/pokemon")
+public class PokemonController {
+
+    private final PokeapiService service;
+
+    public PokemonController(PokeapiService service){
+        this.service = service;
+    }
+
     @GetMapping
     public List<Pokeapi> getAll(){
         return service.getAllPokes();
     }
+}
 ```
 
 PokeapiService (Service):
 ```js
+@Service
+public class PokeapiService {
+
+    private PokemonRepository repository;
+
+    @Autowired
+    public PokeapiService(PokemonRepository repository) {
+        this.repository = repository;
+    }
+
     public List<Pokeapi> getAllPokes(){
         return repository.findAll();
     }
+}
 ```
 PokemonRepository (Repository):
 ```js
+@Repository
+public class PokemonRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public PokemonRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     public List<Pokeapi> findAll() {
         String sql = "SELECT id_pokemon, nombre FROM pokemons";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -43,12 +75,34 @@ PokemonRepository (Repository):
             return p;
         });
     }
+}
 ```
 Pokeapi (Model):
 ```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Pokeapi {
     private Long id_pokemon;
     private String nombre;
+
+    public Pokeapi() {
+    }
+
+    public Long getId_pokemon() {
+        return id_pokemon;
+    }
+
+    public void setId_pokemon(Long id_pokemon) {
+        this.id_pokemon = id_pokemon;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+}
 ```
 
 <h3>
@@ -160,6 +214,7 @@ public class Pokeapi {
     private List<Tipos> tipos;
     private List<Habilidades> habilidades;
     private Ligas liga;
+}
 ```
 
 Tipos (Model):
@@ -167,6 +222,7 @@ Tipos (Model):
 public class Tipos {
     private Long id_tipo;
     private String nombre;
+}
 ```
 
 Habilidades (Model):
@@ -174,6 +230,7 @@ Habilidades (Model):
 public class Habilidades {
     private Long id_habilidad;
     private String nombre;
+}
 ```
 
 Ligas (Model):
@@ -181,6 +238,7 @@ Ligas (Model):
 public class Ligas {
     private Long id_liga;
     private String nombre;
+}
 ```
 
 <h3>
@@ -221,6 +279,7 @@ Tipos (Model)
 public class Tipos {
     private Long id_tipo;
     private String nombre;
+}
 ```
 
 <h3>
@@ -404,6 +463,7 @@ public class Tipos {
     private List<Tipos> sinDanioDe;
     private List<Tipos> sinDanioA;
     private List<Pokeapi> pokemons;
+}
 ```
 
 Pokeapi (Model):
@@ -411,4 +471,219 @@ Pokeapi (Model):
 public class Pokeapi {
     private Long id_pokemon;
     private String nombre;
+}
+```
+
+<h3>
+  "/api/habilidad"
+</h3>
+Se trata de la lista completa de habilidades disponibles. En ella podrán ver el id y el nombre de cada una. Funciona así:
+
+HabilidadController (Controller):
+```js
+    @GetMapping
+    public List<Habilidades> getAll(){
+        return service.getAllHabilidades();
+    }
+```
+
+HabilidadService (Service):
+```js
+    public List<Habilidades> getAllHabilidades(){
+        return repository.findAll();
+    }
+```
+
+HabilidadRepository (Repository):
+```js
+    public List<Habilidades> findAll() {
+        String sql = "SELECT id_habilidad, nombre FROM habilidades";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Habilidades h = new Habilidades();
+            h.setId_habilidad(rs.getLong("id_habilidad"));
+            h.setNombre(rs.getString("nombre"));
+            return h;
+        });
+    }
+```
+
+Habilidades (Model):
+```js
+public class Habilidades {
+    private Long id_habilidad;
+    private String nombre;
+}
+```
+
+<h3>
+  "/api/habilidad/{id_habilidad}"
+</h3>
+En este caso se podrá ver el efecto de una habilidad determinada agregando el id. Además, también traerá la lista completa de pokémons que cuentan con ella. Funciona así:
+
+HabilidadController (Controller):
+```js
+    @GetMapping("/{id_habilidad}")
+    public ResponseEntity<Habilidades> getById(@PathVariable Long id_habilidad){
+        try{
+            return ResponseEntity.ok(service.getHabilidadCompleta(id_habilidad));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+```
+
+HabilidadService (Service):
+```js
+    public Habilidades getHabilidadCompleta(Long id_habilidad){
+        Habilidades habilidades = repository.findHabilidadById(id_habilidad)
+                .orElseThrow(()-> new RuntimeException("Habilidad no encontrada"));
+
+        habilidades.setPokemons(repository.findPokemonsByHabilidad(id_habilidad));
+        return habilidades;
+    }
+```
+
+HabilidadRepository (Repository):
+```js
+    public Optional<Habilidades> findHabilidadById(Long id_habilidad){
+        String sql = "SELECT id_habilidad, nombre, efecto, efecto_corto FROM habilidades WHERE id_habilidad = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_habilidad}, rs -> {
+            if(rs.next()){
+                Habilidades h = new Habilidades();
+                h.setId_habilidad(rs.getLong("id_habilidad"));
+                h.setNombre(rs.getString("nombre"));
+                return Optional.of(h);
+            }
+            return Optional.empty();
+                });
+    }
+
+    public List<Pokeapi> findPokemonsByHabilidad(Long id_habilidad){
+        String sql = "SELECT p.id_pokemon, p.nombre "+
+                "FROM pokemons p "+
+                "INNER JOIN pokemon_habilidad ph ON p.id_pokemon = ph.id_pokemon "+
+                "INNER JOIN habilidades h ON ph.id_habilidad = h.id_habilidad "+
+                "WHERE id_habilidad = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_habilidad}, rs -> {
+            List<Pokeapi> pokemons = new ArrayList<>();
+            while(rs.next()){
+                Pokeapi p = new Pokeapi();
+                p.setId_pokemon(rs.getLong("id_pokemon"));
+                p.setNombre(rs.getString("nombre"));
+                pokemons.add(p);
+            }
+            return pokemons;
+        });
+    }
+```
+
+Habilidades (Model):
+```js
+public class Habilidades {
+    private Long id_habilidad;
+    private String nombre;
+    private String efecto;
+    private String efecto_corto;
+    private List<Pokeapi> pokemons;
+}
+```
+
+Pokeapi (Model):
+```js
+public class Pokeapi {
+    private Long id_pokemon;
+    private String nombre;
+}
+```
+
+<h3>
+  "/api/ligas"
+</h3>
+Este endpoint trae la lista completa de ligas disponibles, solo con su id y nombre. Funciona así:
+
+LigaController (Controller):
+```js
+@RestController
+@RequestMapping("/api/ligas")
+public class LigasController {
+
+    private final LigaService service;
+
+    public LigasController(LigaService service) {
+        this.service = service;
+    }
+    @GetMapping
+    public List<Ligas> getAll(){
+        return service.getAllLigas();
+    }
+}
+```
+
+LigaService (Service):
+```js
+@Service
+public class LigaService {
+
+    private LigaRepository repository;
+
+    @Autowired
+    public LigaService(LigaRepository repository) {
+        this.repository = repository;
+    }
+
+    public List<Ligas> getAllLigas(){
+        return repository.findAll();
+    }
+}
+```
+
+LigaRepository (Repository):
+```js
+@Repository
+public class LigaRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public LigaRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public List<Ligas> findAll() {
+        String sql = "SELECT id_liga, nombre FROM ligas";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Ligas l = new Ligas();
+            l.setId_liga(rs.getLong("id_liga"));
+            l.setNombre(rs.getString("nombre"));
+            return l;
+        });
+    }
+}
+```
+
+Ligas (Model):
+```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Ligas {
+    private Long id_liga;
+    private String nombre;
+    private List<Pokeapi> pokemons;
+
+    public Long getId_liga() {
+        return id_liga;
+    }
+
+    public void setId_liga(Long id_liga) {
+        this.id_liga = id_liga;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+}
 ```
