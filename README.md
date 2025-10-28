@@ -49,9 +49,6 @@ Pokeapi (Model):
 public class Pokeapi {
     private Long id_pokemon;
     private String nombre;
-    private List<Tipos> tipos;
-    private List<Habilidades> habilidades;
-    private Ligas liga;
 ```
 
 <h3>
@@ -183,5 +180,235 @@ Ligas (Model):
 ```js
 public class Ligas {
     private Long id_liga;
+    private String nombre;
+```
+
+<h3>
+  "/api/tipo"
+</h3>
+La lista de todos los tipos posibles. Al igual que ocurre con la lista completa de pokémons, en este endpoint solo se podrá ver el id y el nombre del tipo. Funciona así:
+
+TipoController (Controller):
+```js
+    @GetMapping
+    public List<Tipos> getAll(){
+        return service.getAllTipos();
+    }
+```
+
+TipoService (Service):
+```js
+    public List<Tipos> getAllTipos(){
+        return repository.findAll();
+    }
+```
+
+TipoRepository (Repository):
+```js
+    public List<Tipos> findAll() {
+        String sql = "SELECT id_tipo, nombre FROM tipos";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Tipos t = new Tipos();
+            t.setId_tipo(rs.getLong("id_tipo"));
+            t.setNombre(rs.getString("nombre"));
+            return t;
+        });
+    }
+```
+
+Tipos (Model)
+```js
+public class Tipos {
+    private Long id_tipo;
+    private String nombre;
+```
+
+<h3>
+  "/api/tipo/{id_tipo}"
+</h3>
+Este endpoint trae toda la data de un determinado tipo, desde fortalezas y debilidades hasta incluso la lista completa de los pokémons que son de ese determinado tipo. Funciona así:
+
+TipoController (Controller):
+```js
+    @GetMapping("/{id_tipo")
+    public ResponseEntity<Tipos> getById(@PathVariable Long id_tipo){
+        try{
+            return ResponseEntity.ok(service.getTipoCompleto(id_tipo));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+```
+
+TipoService (Service):
+```js
+    public Tipos getTipoCompleto(Long id_tipo){
+        Tipos tipos = repository.findTipoById(id_tipo)
+                .orElseThrow(()-> new RuntimeException("Tipo no encontrado"));
+
+        tipos.setDobleDanioDe(repository.findDobleDanioDeByTipo(id_tipo));
+        tipos.setDobleDanioA(repository.findDobleDanioAByTipo(id_tipo));
+        tipos.setMitadDanioDe(repository.findMitadDanioDeByTipo(id_tipo));
+        tipos.setMitadDanioA(repository.findMitadDanioAByTipo(id_tipo));
+        tipos.setSinDanioDe(repository.findSinDanioDeByTipo(id_tipo));
+        tipos.setSinDanioA(repository.findSinDanioAByTipo(id_tipo));
+        tipos.setPokemons(repository.findPokeByTipo(id_tipo));
+        return tipos;
+    }
+```
+
+TipoRepository (Repository):
+```js
+    public Optional<Tipos> findTipoById(Long id_tipo){
+        String sql = "SELECT id_tipo, nombre FROM tipos WHERE id_tipo = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_tipo}, rs->{
+            if(rs.next()){
+                Tipos t = new Tipos();
+                t.setId_tipo(rs.getLong("id_tipo"));
+                t.setNombre(rs.getString("nombre"));
+                return Optional.of(t);
+            }
+            return Optional.empty();
+                });
+    }
+
+    public List<Tipos> findDobleDanioDeByTipo(Long id_tipo){
+        String sql = "SELECT t1.id_tipo, t1.nombre FROM tipos t "+
+                "LEFT JOIN `doble_daño_de` ddd ON t.id_tipo = ddd.id_tipo1 "+
+                "LEFT JOIN tipos t1 ON ddd.id_tipo2 = t1.id_tipo "+
+                "WHERE t.id_tipo = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_tipo}, rs -> {
+            List<Tipos> tipos = new ArrayList<>();
+            while(rs.next()){
+                Tipos t = new Tipos();
+                t.setId_tipo(rs.getLong("id_tipo"));
+                t.setNombre(rs.getString("nombre"));
+                tipos.add(t);
+            }
+            return tipos;
+        });
+    }
+
+    public List<Tipos> findDobleDanioAByTipo(Long id_tipo){
+        String sql = "SELECT t1.id_tipo, t1.nombre FROM tipos t "+
+                "LEFT JOIN `doble_daño_a` dda ON t.id_tipo = dda.id_tipo1 "+
+                "LEFT JOIN tipos t1 ON dda.id_tipo2 = t1.id_tipo "+
+                "WHERE t.id_tipo = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_tipo}, rs -> {
+            List<Tipos> tipos = new ArrayList<>();
+            while(rs.next()){
+                Tipos t = new Tipos();
+                t.setId_tipo(rs.getLong("id_tipo"));
+                t.setNombre(rs.getString("nombre"));
+                tipos.add(t);
+            }
+            return tipos;
+        });
+    }
+
+    public List<Tipos> findMitadDanioDeByTipo(Long id_tipo){
+        String sql = "SELECT t1.id_tipo, t1.nombre FROM tipos t "+
+                "LEFT JOIN `mitad_daño_a` mdd ON t.id_tipo = mdd.id_tipo1 "+
+                "LEFT JOIN tipos t1 ON mdd.id_tipo2 = t1.id_tipo "+
+                "WHERE t.id_tipo = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_tipo}, rs -> {
+            List<Tipos> tipos = new ArrayList<>();
+            while(rs.next()){
+                Tipos t = new Tipos();
+                t.setId_tipo(rs.getLong("id_tipo"));
+                t.setNombre(rs.getString("nombre"));
+                tipos.add(t);
+            }
+            return tipos;
+        });
+    }
+
+    public List<Tipos> findMitadDanioAByTipo(Long id_tipo){
+        String sql = "SELECT t1.id_tipo, t1.nombre FROM tipos t "+
+                "LEFT JOIN `mitad_daño_a` mda ON t.id_tipo = mda.id_tipo1 "+
+                "LEFT JOIN tipos t1 ON mda.id_tipo2 = t1.id_tipo "+
+                "WHERE t.id_tipo = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_tipo}, rs -> {
+            List<Tipos> tipos = new ArrayList<>();
+            while(rs.next()){
+                Tipos t = new Tipos();
+                t.setId_tipo(rs.getLong("id_tipo"));
+                t.setNombre(rs.getString("nombre"));
+                tipos.add(t);
+            }
+            return tipos;
+        });
+    }
+
+    public List<Tipos> findSinDanioDeByTipo(Long id_tipo){
+        String sql = "SELECT t1.id_tipo, t1.nombre FROM tipos t "+
+                "LEFT JOIN `sin_daño_de` sdd ON t.id_tipo = sdd.id_tipo1 "+
+                "LEFT JOIN tipos t1 ON sdd.id_tipo2 = t1.id_tipo "+
+                "WHERE t.id_tipo = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_tipo}, rs -> {
+            List<Tipos> tipos = new ArrayList<>();
+            while(rs.next()){
+                Tipos t = new Tipos();
+                t.setId_tipo(rs.getLong("id_tipo"));
+                t.setNombre(rs.getString("nombre"));
+                tipos.add(t);
+            }
+            return tipos;
+        });
+    }
+
+    public List<Tipos> findSinDanioAByTipo(Long id_tipo){
+        String sql = "SELECT t1.id_tipo, t1.nombre FROM tipos t "+
+                "LEFT JOIN `sin_daño_de` sda ON t.id_tipo = sda.id_tipo1 "+
+                "LEFT JOIN tipos t1 ON sda.id_tipo2 = t1.id_tipo "+
+                "WHERE t.id_tipo = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_tipo}, rs -> {
+            List<Tipos> tipos = new ArrayList<>();
+            while(rs.next()){
+                Tipos t = new Tipos();
+                t.setId_tipo(rs.getLong("id_tipo"));
+                t.setNombre(rs.getString("nombre"));
+                tipos.add(t);
+            }
+            return tipos;
+        });
+    }
+
+    public List<Pokeapi> findPokeByTipo(Long id_tipo){
+        String sql = "SELECT p.id_pokemon, p.nombre FROM pokemons p "+
+                "INNER JOIN pokemon_tipo pt ON p.id_pokemon = pt.id_pokemon "+
+                "INNER JOIN tipos t ON pt.id_tipo = t.id_tipo "+
+                "WHERE t.id_tipo = ?";
+        return jdbcTemplate.query(sql, new Object[]{id_tipo}, rs -> {
+            List<Pokeapi> pokemons = new ArrayList<>();
+            while(rs.next()){
+                Pokeapi p = new Pokeapi();
+                p.setId_pokemon(rs.getLong("id_pokemon"));
+                p.setNombre(rs.getString("nombre"));
+                pokemons.add(p);
+            }
+            return pokemons;
+        });
+    }
+```
+
+Tipos (Model):
+```js
+public class Tipos {
+    private Long id_tipo;
+    private String nombre;
+    private List<Tipos> dobleDanioDe;
+    private List<Tipos> dobleDanioA;
+    private List<Tipos> mitadDanioDe;
+    private List<Tipos> mitadDanioA;
+    private List<Tipos> sinDanioDe;
+    private List<Tipos> sinDanioA;
+    private List<Pokeapi> pokemons;
+```
+
+Pokeapi (Model):
+```js
+public class Pokeapi {
+    private Long id_pokemon;
     private String nombre;
 ```
