@@ -3,22 +3,27 @@
   <img src="https://archives.bulbagarden.net/media/upload/4/4b/Pok%C3%A9dex_logo.png">
 </p>
 
-<h2>
+<h1>
   Descripción
-</h2>
+</h1>
 Pokédex es un proyecto de API hecho para fanáticos y no tan fanáticos de Pokémon. Se trata de un JSON abierto hecho para recabar la mayor cantidad de información posible sobre los pokémons de todas las generaciones. Incluso, también la idea es tener información sobre los tipos con sus fortalezas y debilidades, las descripciones de cada habilidad, y hasta que los usuarios puedan traer la lista por generación. Si bien la API ya cuenta con bastante info lista para ser utilizada, se encuentra en constante desarrollo con el objetivo de brindar cada vez más información.
 
-<h2>
+<h1>
   ¿Cómo funciona?
-</h2>
+</h1>
 Como ocurre con toda API, se maneja por distintos endpoints con el objetivo de que los usuarios puedan recabar solamente la información que les haga falta en el momento. La estructura es bastante sencilla de entender: el controller le envía una petición al service correspondiente, el service al repository, y el repository al o a los models que haga falta, ya que en el caso de los datos completos se necesita hacer consultas a más de uno. A continuación se detallará cada endpoint y cómo funciona.   
 
-<h3>
+<h2>
   "/api/pokemon"
-</h3>
+</h2
 El endpoint principal. Trae la lista completa con todos los pokémons de cada generación, solo con el id y el nombre del mismo. La idea es que, a través del PokemonController, el usuario realice un pedido que pase por el PokeapiService, luego por el PokemonRepository, y finalmente llegue al model Pokeapi para recabar los datos. Funciona así:
 
-PokemonController (Controller):
+<h3>
+  PokemonController (Controller):
+</h3>
+
+A través de la función getAll, el PokemonController le envía una petición a la función getAllPokes del PokeapiService.
+
 ```js
 @RestController
 @RequestMapping("/api/pokemon")
@@ -37,7 +42,12 @@ public class PokemonController {
 }
 ```
 
+<h3>
 PokeapiService (Service):
+</h3>
+
+Recibe la petición de parte del PokemonController. A raíz de ello, utiliza la función getAllPokes para realizar otra petición a la función findAll del PokemonRepository.
+
 ```js
 @Service
 public class PokeapiService {
@@ -54,7 +64,13 @@ public class PokeapiService {
     }
 }
 ```
-PokemonRepository (Repository):
+
+<h3>
+  PokemonRepository (Repository):
+</h3>
+
+Recibe la petición del PokeapiService. Debido a ello, utiliza la función findAll para realizar la consulta SQL y traer los datos desde Pokeapi.
+
 ```js
 @Repository
 public class PokemonRepository {
@@ -77,7 +93,13 @@ public class PokemonRepository {
     }
 }
 ```
+
+<h3>
 Pokeapi (Model):
+</h3>
+
+Almacena los datos que pide PokemonRepository. En este caso, devuelve el id y el nombre de todos los pokémons.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Pokeapi {
