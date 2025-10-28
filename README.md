@@ -896,12 +896,18 @@ public class Pokeapi {
 }
 ```
 
-<h3>
+<h2>
   "/api/habilidad"
-</h3>
+</h2>
+
 Se trata de la lista completa de habilidades disponibles. En ella podrán ver el id y el nombre de cada una. Funciona así:
 
-HabilidadController (Controller):
+<h3>
+  HabilidadController (Controller):
+</h3>
+
+A través de la función getAll, HabilidadController envía una petición a la función getAllHabilidades de HabilidadService.
+
 ```js
 @RestController
 @RequestMapping("/api/habilidad")
@@ -920,7 +926,12 @@ public class HabilidadController {
 }
 ```
 
-HabilidadService (Service):
+<h3>
+  HabilidadService (Service):
+</h3>
+
+La función getAllHabilidades es activada desde HabilidadController, y esto hace que HabilidadService le envíe una petición a la función findAll de HabilidadRepository.
+
 ```js
 @Service
 public class HabilidadService {
@@ -938,7 +949,12 @@ public class HabilidadService {
 }
 ```
 
-HabilidadRepository (Repository):
+<h3>
+  HabilidadRepository (Repository):
+</h3>
+
+La función findAll es activada desde HabilidadService. La misma realiza la consulta SQL adecuada y envía la misma al model Habilidades con tal de conseguir el id_habilidad y el nombre de todas las habilidades.
+
 ```js
 @Repository
 public class HabilidadRepository {
@@ -963,7 +979,12 @@ public class HabilidadRepository {
 }
 ```
 
-Habilidades (Model):
+<h3>
+  Habilidades (Model):
+</h3>
+
+Recibe la consulta SQL realizada por la función findAll de HabilidadesRepository. A raíz de ello, envía los id y los nombres de todas las habilidades existentes.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Habilidades {
@@ -991,12 +1012,18 @@ public class Habilidades {
 }
 ```
 
-<h3>
+<h2>
   "/api/habilidad/{id_habilidad}"
-</h3>
+</h2>
+
 En este caso se podrá ver el efecto de una habilidad determinada agregando el id. Además, también traerá la lista completa de pokémons que cuentan con ella. Funciona así:
 
-HabilidadController (Controller):
+<h3>
+  HabilidadController (Controller):
+</h3>
+
+A través de la función getById, HabilidadController envía una petición a la función getHabilidadCompleta de HabilidadService.
+
 ```js
 @RestController
 @RequestMapping("/api/habilidad")
@@ -1020,7 +1047,12 @@ public class HabilidadController {
 }
 ```
 
-HabilidadService (Service):
+<h3>
+  HabilidadService (Service):
+</h3>
+
+La función getHabilidadCompleta es activada desde HabilidadController. A raíz de ello, HabilidadService envía peticiones a las funciones findHabilidadById y findPokemonsByHabilidad de HabilidadRepository.
+
 ```js
 @Service
 public class HabilidadService {
@@ -1043,7 +1075,12 @@ public class HabilidadService {
 }
 ```
 
-HabilidadRepository (Repository):
+<h3>
+  HabilidadRepository (Repository):
+</h3>
+
+Las funciones findHabilidadById y findPokemonsByHabilidad son activadas desde HabilidadService. Las mismas realizan las consultas SQL pertinentes a los models Habilidades y Pokeapi.
+
 ```js
 @Repository
 public class HabilidadRepository {
@@ -1088,7 +1125,12 @@ public class HabilidadRepository {
 }
 ```
 
-Habilidades (Model):
+<h3>
+  Habilidades (Model):
+</h3>
+
+Recibe la consulta SQL de parte de la función findHabilidadById de HabilidadRepository, que le pide id, nombre, efecto y efecto_corto. Envía estos datos en base a la habilidad requerida.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Habilidades {
@@ -1143,7 +1185,12 @@ public class Habilidades {
 }
 ```
 
-Pokeapi (Model):
+<h3>
+  Pokeapi (Model):
+</h3>
+
+Recibe la petición de parte de la función findPokemonsByHabilidad de HabilidadRepository, que le pide la lista completa de los pokémons que poseen esa habilidad. Acto seguido, envía los datos.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Pokeapi {
