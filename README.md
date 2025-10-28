@@ -13,12 +13,15 @@ Pokédex es un proyecto de API hecho para fanáticos y no tan fanáticos de Pok�
 <h1>
   ¿Cómo funciona?
 </h1>
-Como ocurre con toda API, se maneja por distintos endpoints con el objetivo de que los usuarios puedan recabar solamente la información que les haga falta en el momento. La estructura es bastante sencilla de entender: el controller le envía una petición al service correspondiente, el service al repository, y el repository al o a los models que haga falta, ya que en el caso de los datos completos se necesita hacer consultas a más de uno. A continuación se detallará cada endpoint y cómo funciona.   
+Como ocurre con toda API, se maneja por distintos endpoints con el objetivo de que los usuarios puedan recabar solamente la información que les haga falta en el momento. La estructura es bastante sencilla de entender: el controller le envía una petición al service correspondiente, el service al repository, y el repository al o a los models que haga falta, ya que en el caso de los datos completos se necesita hacer consultas a más de uno. A continuación se detallará cada endpoint y cómo funciona.
+</br>
 
+<h1>Endpoints</h1>
 
-<h2>
+<details>
+<summary><h2>
   "/api/pokemon"
-</h2
+</h2></summary>
 El endpoint principal. Trae la lista completa con todos los pokémons de cada generación, solo con el id y el nombre del mismo. La idea es que, a través del PokemonController, el usuario realice un pedido que pase por el PokeapiService, luego por el PokemonRepository, y finalmente llegue al model Pokeapi para recabar los datos. Funciona así:
 </br>
 
@@ -133,11 +136,12 @@ public class Pokeapi {
     }
 }
 ```
-</br>
+</details>
 
-<h2>
+<details>
+<summary><h2>
   "/api/pokemon/{id_pokemon}"
-</h2>
+</h2></summary>
 
 El endpoint para contar con todos los datos del pokémon. Una vez que conoces el id del pokémon cuyas estadísticas deseas ver, solo lo agregas al final y te traerá ese pokémon con sus tipos, habilidades, y hasta la liga correspondiente. Funciona así:
 </br>
@@ -447,11 +451,12 @@ public class Ligas {
 }
 
 ```
-</br>
+</details>
 
-<h2>
+<details>
+<summary><h2>
   "/api/tipo"
-</h2>
+</h2></summary>
 
 La lista de todos los tipos posibles. Al igual que ocurre con la lista completa de pokémons, en este endpoint solo se podrá ver el id y el nombre del tipo. Funciona así:
 </br>
@@ -566,11 +571,12 @@ public class Tipos {
     }
 }
 ```
-</br>
+</details>
 
-<h2>
+<details>
+<summary><h2>
   "/api/tipo/{id_tipo}"
-</h2>
+</h2></summary>
 
 Este endpoint trae toda la data de un determinado tipo, desde fortalezas y debilidades hasta incluso la lista completa de los pokémons que son de ese determinado tipo. Funciona así:
 </br>
@@ -918,11 +924,12 @@ public class Pokeapi {
     }
 }
 ```
-</br>
+</details>
 
-<h2>
+<details>
+<summary><h2>
   "/api/habilidad"
-</h2>
+</h2></summary>
 
 Se trata de la lista completa de habilidades disponibles. En ella podrán ver el id y el nombre de cada una. Funciona así:
 </br>
@@ -1039,11 +1046,12 @@ public class Habilidades {
     }
 }
 ```
-</br>
+</details>
 
-<h2>
+<details>
+<summary><h2>
   "/api/habilidad/{id_habilidad}"
-</h2>
+</h2></summary>
 
 En este caso se podrá ver el efecto de una habilidad determinada agregando el id. Además, también traerá la lista completa de pokémons que cuentan con ella. Funciona así:
 </br>
@@ -1251,11 +1259,12 @@ public class Pokeapi {
     }
 }
 ```
-</br>
+</details>
 
-<h2>
+<details>
+<summary><h2>
   "/api/ligas"
-</h2>
+</h2></summary>
 
 Este endpoint trae la lista completa de ligas disponibles, solo con su id y nombre. Funciona así:
 </br>
@@ -1368,11 +1377,12 @@ public class Ligas {
     }
 }
 ```
-</br>
+</details>
 
-<h2>
+<details>
+<summary><h2>
   "/api/ligas/{id_liga}"
-</h2>
+</h2></summary>
 Este endpoint está hecho con el objetivo de traer los pokémons por generación. Es decir, se coloca el id de la liga deseada y no solo traerá el id y el nombre de la liga, sino también la lista de pokémons correspondientes a ella. Funciona así:
 </br>
 
@@ -1552,4 +1562,4 @@ public class Pokeapi {
     }
 }
 ```
-</br>
+</details>
