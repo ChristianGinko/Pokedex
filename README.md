@@ -112,6 +112,16 @@ El endpoint para contar con todos los datos del pokémon. Una vez que conoces el
 
 PokemonController (Controller):
 ```js
+@RestController
+@RequestMapping("/api/pokemon")
+public class PokemonController {
+
+    private final PokeapiService service;
+
+    public PokemonController(PokeapiService service){
+        this.service = service;
+    }
+
     @GetMapping("/{id_pokemon}")
     public ResponseEntity<Pokeapi> getById(@PathVariable Long id_pokemon){
         try{
@@ -120,10 +130,21 @@ PokemonController (Controller):
             return ResponseEntity.notFound().build();
         }
     }
+}
 ```
 
 PokeapiService (Service):
 ```js
+@Service
+public class PokeapiService {
+
+    private PokemonRepository repository;
+
+    @Autowired
+    public PokeapiService(PokemonRepository repository) {
+        this.repository = repository;
+    }
+
     public Pokeapi getPokeCompleto(Long id_pokemon) {
         Pokeapi pokemon = repository.findPokeById(id_pokemon)
                 .orElseThrow(()-> new RuntimeException("Pokemon no encontrado"));
@@ -135,10 +156,22 @@ PokeapiService (Service):
         );
         return pokemon;
     }
+
+}
 ```
 
 PokemonRepository (Repository):
 ```js
+@Repository
+public class PokemonRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public PokemonRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     public Optional<Pokeapi> findPokeById(Long id_pokemon){
         String sql = "SELECT id_pokemon, nombre FROM pokemons WHERE id_pokemon = ?";
 
@@ -204,41 +237,142 @@ PokemonRepository (Repository):
             return Optional.empty();
                 });
     }
+
+}
 ```
 
 Pokeapi (Model):
 ```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Pokeapi {
     private Long id_pokemon;
     private String nombre;
     private List<Tipos> tipos;
     private List<Habilidades> habilidades;
     private Ligas liga;
+
+    public Pokeapi() {
+    }
+
+    public Long getId_pokemon() {
+        return id_pokemon;
+    }
+
+    public void setId_pokemon(Long id_pokemon) {
+        this.id_pokemon = id_pokemon;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public List<Tipos> getTipos() {
+        return tipos;
+    }
+
+    public void setTipos(List<Tipos> tipos) {
+        this.tipos = tipos;
+    }
+
+    public List<Habilidades> getHabilidades() {
+        return habilidades;
+    }
+
+    public void setHabilidades(List<Habilidades> habilidades) {
+        this.habilidades = habilidades;
+    }
+
+    public Ligas getLiga() {
+        return liga;
+    }
+
+    public void setLiga(Ligas liga) {
+        this.liga = liga;
+    }
 }
 ```
 
 Tipos (Model):
 ```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Tipos {
     private Long id_tipo;
     private String nombre;
+
+    public Long getId_tipo() {
+        return id_tipo;
+    }
+
+    public void setId_tipo(Long id_tipo) {
+        this.id_tipo = id_tipo;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }
 ```
 
 Habilidades (Model):
 ```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Habilidades {
     private Long id_habilidad;
     private String nombre;
+
+    public Habilidades() {
+    }
+
+    public Long getId_habilidad() {
+        return id_habilidad;
+    }
+
+    public void setId_habilidad(Long id_habilidad) {
+        this.id_habilidad = id_habilidad;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }
 ```
 
 Ligas (Model):
 ```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Ligas {
     private Long id_liga;
     private String nombre;
+
+    public Long getId_liga() {
+        return id_liga;
+    }
+
+    public void setId_liga(Long id_liga) {
+        this.id_liga = id_liga;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }
+
 ```
 
 <h3>
@@ -248,21 +382,55 @@ La lista de todos los tipos posibles. Al igual que ocurre con la lista completa 
 
 TipoController (Controller):
 ```js
+@RestController
+@RequestMapping("/api/tipo")
+public class TipoController {
+
+    private final TipoService service;
+
+    public TipoController(TipoService service){
+        this.service = service;
+    }
+
     @GetMapping
     public List<Tipos> getAll(){
         return service.getAllTipos();
     }
+
+}
 ```
 
 TipoService (Service):
 ```js
+@Service
+public class TipoService {
+
+    private TipoRepository repository;
+
+    @Autowired
+    public TipoService(TipoRepository repository){
+        this.repository = repository;
+    }
+
     public List<Tipos> getAllTipos(){
         return repository.findAll();
     }
+
+}
 ```
 
 TipoRepository (Repository):
 ```js
+@Repository
+public class TipoRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public TipoRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     public List<Tipos> findAll() {
         String sql = "SELECT id_tipo, nombre FROM tipos";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -272,13 +440,31 @@ TipoRepository (Repository):
             return t;
         });
     }
+}
 ```
 
 Tipos (Model)
 ```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Tipos {
     private Long id_tipo;
     private String nombre;
+
+    public Long getId_tipo() {
+        return id_tipo;
+    }
+
+    public void setId_tipo(Long id_tipo) {
+        this.id_tipo = id_tipo;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }
 ```
 
@@ -289,6 +475,16 @@ Este endpoint trae toda la data de un determinado tipo, desde fortalezas y debil
 
 TipoController (Controller):
 ```js
+@RestController
+@RequestMapping("/api/tipo")
+public class TipoController {
+
+    private final TipoService service;
+
+    public TipoController(TipoService service){
+        this.service = service;
+    }
+
     @GetMapping("/{id_tipo")
     public ResponseEntity<Tipos> getById(@PathVariable Long id_tipo){
         try{
@@ -297,10 +493,22 @@ TipoController (Controller):
             return ResponseEntity.notFound().build();
         }
     }
+
+}
 ```
 
 TipoService (Service):
 ```js
+@Service
+public class TipoService {
+
+    private TipoRepository repository;
+
+    @Autowired
+    public TipoService(TipoRepository repository){
+        this.repository = repository;
+    }
+
     public Tipos getTipoCompleto(Long id_tipo){
         Tipos tipos = repository.findTipoById(id_tipo)
                 .orElseThrow(()-> new RuntimeException("Tipo no encontrado"));
@@ -314,10 +522,22 @@ TipoService (Service):
         tipos.setPokemons(repository.findPokeByTipo(id_tipo));
         return tipos;
     }
+
+}
 ```
 
 TipoRepository (Repository):
 ```js
+@Repository
+public class TipoRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public TipoRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     public Optional<Tipos> findTipoById(Long id_tipo){
         String sql = "SELECT id_tipo, nombre FROM tipos WHERE id_tipo = ?";
         return jdbcTemplate.query(sql, new Object[]{id_tipo}, rs->{
@@ -449,10 +669,12 @@ TipoRepository (Repository):
             return pokemons;
         });
     }
+}
 ```
 
 Tipos (Model):
 ```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Tipos {
     private Long id_tipo;
     private String nombre;
@@ -463,14 +685,106 @@ public class Tipos {
     private List<Tipos> sinDanioDe;
     private List<Tipos> sinDanioA;
     private List<Pokeapi> pokemons;
+
+    public Long getId_tipo() {
+        return id_tipo;
+    }
+
+    public void setId_tipo(Long id_tipo) {
+        this.id_tipo = id_tipo;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public List<Tipos> getDobleDanioDe() {
+        return dobleDanioDe;
+    }
+
+    public void setDobleDanioDe(List<Tipos> dobleDanioDe) {
+        this.dobleDanioDe = dobleDanioDe;
+    }
+
+    public List<Tipos> getDobleDanioA() {
+        return dobleDanioA;
+    }
+
+    public void setDobleDanioA(List<Tipos> dobleDanioA) {
+        this.dobleDanioA = dobleDanioA;
+    }
+
+    public List<Tipos> getMitadDanioDe() {
+        return mitadDanioDe;
+    }
+
+    public void setMitadDanioDe(List<Tipos> mitadDanioDe) {
+        this.mitadDanioDe = mitadDanioDe;
+    }
+
+    public List<Tipos> getMitadDanioA() {
+        return mitadDanioA;
+    }
+
+    public void setMitadDanioA(List<Tipos> mitadDanioA) {
+        this.mitadDanioA = mitadDanioA;
+    }
+
+    public List<Tipos> getSinDanioDe() {
+        return sinDanioDe;
+    }
+
+    public void setSinDanioDe(List<Tipos> sinDanioDe) {
+        this.sinDanioDe = sinDanioDe;
+    }
+
+    public List<Tipos> getSinDanioA() {
+        return sinDanioA;
+    }
+
+    public void setSinDanioA(List<Tipos> sinDanioA) {
+        this.sinDanioA = sinDanioA;
+    }
+
+    public List<Pokeapi> getPokemons() {
+        return pokemons;
+    }
+
+    public void setPokemons(List<Pokeapi> pokemons) {
+        this.pokemons = pokemons;
+    }
 }
 ```
 
 Pokeapi (Model):
 ```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Pokeapi {
     private Long id_pokemon;
     private String nombre;
+
+    public Pokeapi() {
+    }
+
+    public Long getId_pokemon() {
+        return id_pokemon;
+    }
+
+    public void setId_pokemon(Long id_pokemon) {
+        this.id_pokemon = id_pokemon;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }
 ```
 
@@ -481,21 +795,53 @@ Se trata de la lista completa de habilidades disponibles. En ella podrán ver el
 
 HabilidadController (Controller):
 ```js
+@RestController
+@RequestMapping("/api/habilidad")
+public class HabilidadController {
+
+    private final HabilidadService service;
+
+    public HabilidadController(HabilidadService service){
+        this.service = service;
+    }
+
     @GetMapping
     public List<Habilidades> getAll(){
         return service.getAllHabilidades();
     }
+}
 ```
 
 HabilidadService (Service):
 ```js
+@Service
+public class HabilidadService {
+
+    private HabilidadRepository repository;
+
+    @Autowired
+    public HabilidadService(HabilidadRepository repository){
+        this.repository = repository;
+    }
+
     public List<Habilidades> getAllHabilidades(){
         return repository.findAll();
     }
+}
 ```
 
 HabilidadRepository (Repository):
 ```js
+@Repository
+public class HabilidadRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public HabilidadRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     public List<Habilidades> findAll() {
         String sql = "SELECT id_habilidad, nombre FROM habilidades";
 
@@ -506,13 +852,34 @@ HabilidadRepository (Repository):
             return h;
         });
     }
+}
 ```
 
 Habilidades (Model):
 ```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Habilidades {
     private Long id_habilidad;
     private String nombre;
+
+    public Habilidades() {
+    }
+
+    public Long getId_habilidad() {
+        return id_habilidad;
+    }
+
+    public void setId_habilidad(Long id_habilidad) {
+        this.id_habilidad = id_habilidad;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }
 ```
 
@@ -523,6 +890,16 @@ En este caso se podrá ver el efecto de una habilidad determinada agregando el i
 
 HabilidadController (Controller):
 ```js
+@RestController
+@RequestMapping("/api/habilidad")
+public class HabilidadController {
+
+    private final HabilidadService service;
+
+    public HabilidadController(HabilidadService service){
+        this.service = service;
+    }
+
     @GetMapping("/{id_habilidad}")
     public ResponseEntity<Habilidades> getById(@PathVariable Long id_habilidad){
         try{
@@ -531,10 +908,22 @@ HabilidadController (Controller):
             return ResponseEntity.notFound().build();
         }
     }
+
+}
 ```
 
 HabilidadService (Service):
 ```js
+@Service
+public class HabilidadService {
+
+    private HabilidadRepository repository;
+
+    @Autowired
+    public HabilidadService(HabilidadRepository repository){
+        this.repository = repository;
+    }
+
     public Habilidades getHabilidadCompleta(Long id_habilidad){
         Habilidades habilidades = repository.findHabilidadById(id_habilidad)
                 .orElseThrow(()-> new RuntimeException("Habilidad no encontrada"));
@@ -542,10 +931,22 @@ HabilidadService (Service):
         habilidades.setPokemons(repository.findPokemonsByHabilidad(id_habilidad));
         return habilidades;
     }
+
+}
 ```
 
 HabilidadRepository (Repository):
 ```js
+@Repository
+public class HabilidadRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public HabilidadRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     public Optional<Habilidades> findHabilidadById(Long id_habilidad){
         String sql = "SELECT id_habilidad, nombre, efecto, efecto_corto FROM habilidades WHERE id_habilidad = ?";
         return jdbcTemplate.query(sql, new Object[]{id_habilidad}, rs -> {
@@ -576,24 +977,89 @@ HabilidadRepository (Repository):
             return pokemons;
         });
     }
+}
 ```
 
 Habilidades (Model):
 ```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Habilidades {
     private Long id_habilidad;
     private String nombre;
     private String efecto;
     private String efecto_corto;
     private List<Pokeapi> pokemons;
+
+    public Habilidades() {
+    }
+
+    public Long getId_habilidad() {
+        return id_habilidad;
+    }
+
+    public void setId_habilidad(Long id_habilidad) {
+        this.id_habilidad = id_habilidad;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getEfecto() {
+        return efecto;
+    }
+
+    public void setEfecto(String efecto) {
+        this.efecto = efecto;
+    }
+
+    public String getEfecto_corto() {
+        return efecto_corto;
+    }
+
+    public void setEfecto_corto(String efecto_corto) {
+        this.efecto_corto = efecto_corto;
+    }
+
+    public List<Pokeapi> getPokemons() {
+        return pokemons;
+    }
+
+    public void setPokemons(List<Pokeapi> pokemons) {
+        this.pokemons = pokemons;
+    }
 }
 ```
 
 Pokeapi (Model):
 ```js
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Pokeapi {
     private Long id_pokemon;
     private String nombre;
+
+    public Pokeapi() {
+    }
+
+    public Long getId_pokemon() {
+        return id_pokemon;
+    }
+
+    public void setId_pokemon(Long id_pokemon) {
+        this.id_pokemon = id_pokemon;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }
 ```
 
