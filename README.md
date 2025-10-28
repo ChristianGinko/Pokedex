@@ -3,15 +3,18 @@
   <img src="https://archives.bulbagarden.net/media/upload/4/4b/Pok%C3%A9dex_logo.png">
 </p>
 
+
 <h1>
   Descripción
 </h1>
 Pokédex es un proyecto de API hecho para fanáticos y no tan fanáticos de Pokémon. Se trata de un JSON abierto hecho para recabar la mayor cantidad de información posible sobre los pokémons de todas las generaciones. Incluso, también la idea es tener información sobre los tipos con sus fortalezas y debilidades, las descripciones de cada habilidad, y hasta que los usuarios puedan traer la lista por generación. Si bien la API ya cuenta con bastante info lista para ser utilizada, se encuentra en constante desarrollo con el objetivo de brindar cada vez más información.
 
+
 <h1>
   ¿Cómo funciona?
 </h1>
 Como ocurre con toda API, se maneja por distintos endpoints con el objetivo de que los usuarios puedan recabar solamente la información que les haga falta en el momento. La estructura es bastante sencilla de entender: el controller le envía una petición al service correspondiente, el service al repository, y el repository al o a los models que haga falta, ya que en el caso de los datos completos se necesita hacer consultas a más de uno. A continuación se detallará cada endpoint y cómo funciona.   
+
 
 <h2>
   "/api/pokemon"
@@ -137,7 +140,7 @@ El endpoint para contar con todos los datos del pokémon. Una vez que conoces el
   PokemonController (Controller):
 </h3>
 
-A través de la función getById, realiza una petición a la función getPokeCompleto de PokeapiService.
+A través de la función getById, realiza una petición a la función getPokeCompleto de PokeapiService. Además, se agrega "/{id_pokemon}" al endpoint.
 
 ```js
 @RestController
@@ -433,12 +436,18 @@ public class Ligas {
 
 ```
 
-<h3>
+<h2>
   "/api/tipo"
-</h3>
+</h2>
+
 La lista de todos los tipos posibles. Al igual que ocurre con la lista completa de pokémons, en este endpoint solo se podrá ver el id y el nombre del tipo. Funciona así:
 
-TipoController (Controller):
+<h3>
+  TipoController (Controller):
+</h3>
+
+A través de la función getAll, realiza una petición a la función getAllTipos de TipoService.
+
 ```js
 @RestController
 @RequestMapping("/api/tipo")
@@ -458,7 +467,12 @@ public class TipoController {
 }
 ```
 
-TipoService (Service):
+<h3>
+  TipoService (Service):
+</h3>
+
+Al haber sido llamada la función getAllTipos de parte de TipoController, la misma llama a la función findAll de TipoRepository.
+
 ```js
 @Service
 public class TipoService {
@@ -477,7 +491,12 @@ public class TipoService {
 }
 ```
 
-TipoRepository (Repository):
+<h3>
+  TipoRepository (Repository):
+</h3>
+
+La función findAll de TipoRepository se activa y realiza una consulta SQL al model Tipos en la que pide la lista completa de id y nombre de los tipos.
+
 ```js
 @Repository
 public class TipoRepository {
@@ -501,7 +520,12 @@ public class TipoRepository {
 }
 ```
 
-Tipos (Model)
+<h3>
+  Tipos (Model)
+</h3>
+
+El model Tipos responde a la petición de la función findAll de TipoRepository y, acto seguido, envía los id y nombres de todos los tipos.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Tipos {
@@ -526,12 +550,18 @@ public class Tipos {
 }
 ```
 
-<h3>
+<h2>
   "/api/tipo/{id_tipo}"
-</h3>
+</h2>
+
 Este endpoint trae toda la data de un determinado tipo, desde fortalezas y debilidades hasta incluso la lista completa de los pokémons que son de ese determinado tipo. Funciona así:
 
-TipoController (Controller):
+<h3>
+  TipoController (Controller):
+</h3>
+
+Utiliza la función getById para llamar a la función getTipoCompleto del TipoService. Además, se agrega "/{id_tipo}" al endpoint.
+
 ```js
 @RestController
 @RequestMapping("/api/tipo")
@@ -555,7 +585,12 @@ public class TipoController {
 }
 ```
 
-TipoService (Service):
+<h3>
+  TipoService (Service):
+</h3>
+
+La función getTipoCompleto es activada desde TipoController. Acto seguido, llama a las funciones findTipoById, findDobleDanioDeByTipo, findDobleDanioAByTipo, findMitadDanioDeByTipo, findMitadDanioAByTipo, findSinDanioDeByTipo, findSinDanioAByTipo y findPokeByTipo que hay en el TipoRepository.
+
 ```js
 @Service
 public class TipoService {
@@ -584,7 +619,12 @@ public class TipoService {
 }
 ```
 
-TipoRepository (Repository):
+<h3>
+  TipoRepository (Repository):
+</h3>
+
+Las funciones findTipoById, findDobleDanioDeByTipo, findDobleDanioAByTipo, findMitadDanioDeByTipo, findMitadDanioAByTipo, findSinDanioDeByTipo, findSinDanioAByTipo y findPokeByTipo son llamadas desde TipoService. Esto hace que, a través de las consultas SQL realizadas en cada una, TipoRepository se comunique con los models Tipos y Pokeapi.
+
 ```js
 @Repository
 public class TipoRepository {
@@ -730,7 +770,12 @@ public class TipoRepository {
 }
 ```
 
-Tipos (Model):
+<h3>
+  Tipos (Model):
+</h3>
+
+Las funciones findTipoById, findDobleDanioDeByTipo, findDobleDanioAByTipo, findMitadDanioDeByTipo, findMitadDanioAByTipo, findSinDanioDeByTipo y findSinDanioAByTipo realizan consultas SQL a este model. El primero son datos que ya tiene por defecto la tabla, los demás son reconocidos por tablas intermedias que conectan a los id_tipo.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Tipos {
@@ -818,7 +863,12 @@ public class Tipos {
 }
 ```
 
-Pokeapi (Model):
+<h3>
+  Pokeapi (Model):
+</h3>
+
+La función findPokeByTipo llama al model Pokeapi, que envía el id y el nombre de los pokémons pertenecientes al tipo solicitado.
+
 ```js
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Pokeapi {
